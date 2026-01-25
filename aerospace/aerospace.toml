@@ -86,6 +86,10 @@ run = 'move-node-to-workspace 3'
 # 打开终端 (需要你已安装 iTerm2)
 alt-enter = 'exec-and-forget open -a iTerm2'
 
+# 设置快捷键 ctrl + alt + enter, 将当前应用进入或退出全屏状态
+# ctrl-alt-enter = 'fullscreen'
+shift-alt-enter = 'fullscreen'
+
 # 关闭当前聚焦的窗口
 alt-q = 'close'
 
