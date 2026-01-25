@@ -1,0 +1,272 @@
+# ~/.aerospace.toml
+# ------------------------------------------------------------
+# AeroSpace config (TOML)
+# Docs: Guide / Commands
+# ------------------------------------------------------------
+
+config-version = 2
+start-at-login = true
+
+# Optional: run commands after startup
+after-startup-command = []
+
+# Normalization keeps the tree clean (recommended)
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+
+# Default tiling look
+accordion-padding = 30
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+
+# Mouse follows focused monitor (optional)
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+
+# Gaps: tweak to your taste
+[gaps]
+inner.horizontal = 8
+inner.vertical   = 8
+outer.left   = 8
+outer.right  = 8
+outer.top    = 8
+outer.bottom = 8
+
+[key-mapping]
+preset = 'qwerty'
+
+# Make script path configurable for exec-and-forget (bash -c)
+[exec.env-vars]
+AEROSPACE_SCRIPTS = '${HOME}/.config/aerospace/scripts'
+
+# ------------------------------------------------------------
+# MAIN MODE
+# ------------------------------------------------------------
+[mode.main.binding]
+
+# --- Layout ---
+alt-slash = 'layout tiles horizontal vertical'
+alt-comma = 'layout accordion horizontal vertical'
+alt-shift-space = 'layout floating tiling'   # toggle floating/tiling
+
+# --- Focus (vim keys + arrows) ---
+alt-h = 'focus left'
+alt-j = 'focus down'
+alt-k = 'focus up'
+alt-l = 'focus right'
+alt-left  = 'focus left'
+alt-down  = 'focus down'
+alt-up    = 'focus up'
+alt-right = 'focus right'
+
+# --- Move window in the tiling tree ---
+alt-shift-h = 'move left'
+alt-shift-j = 'move down'
+alt-shift-k = 'move up'
+alt-shift-l = 'move right'
+alt-shift-left  = 'move left'
+alt-shift-down  = 'move down'
+alt-shift-up    = 'move up'
+alt-shift-right = 'move right'
+
+# --- Resize (tiling) quick keys ---
+alt-minus = 'resize smart -50'
+alt-equal = 'resize smart +50'
+alt-shift-minus = 'resize smart -120'
+alt-shift-equal = 'resize smart +120'
+
+# --- Enter modes ---
+alt-r = 'mode resize'
+alt-s = 'mode snap'
+alt-shift-semicolon = 'mode service'
+
+# --- Workspaces (1..9) ---
+alt-1 = 'workspace 1'
+alt-2 = 'workspace 2'
+alt-3 = 'workspace 3'
+alt-4 = 'workspace 4'
+alt-5 = 'workspace 5'
+alt-6 = 'workspace 6'
+alt-7 = 'workspace 7'
+alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
+
+# Move window to workspace + follow
+alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
+alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
+alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
+alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
+
+# 一键移动到右上角 (暴力移动：先最右，再最上)
+alt-shift-i = ['move right', 'move right', 'move right', 'move up', 'move up', 'move up']
+# 同理：左上角
+alt-shift-u = ['move left', 'move left', 'move left', 'move up', 'move up', 'move up']
+# 同理：左下角
+alt-shift-n = ['move left', 'move left', 'move left', 'move down', 'move down', 'move down']
+# 同理：右下角
+alt-shift-m = ['move right', 'move right', 'move right', 'move down', 'move down', 'move down']
+
+# Back-and-forth workspace
+alt-tab = 'workspace-back-and-forth'
+
+# --- Move window to other monitor (next/prev) ---
+alt-shift-leftSquareBracket  = 'move-node-to-monitor prev --wrap-around --focus-follows-window'
+alt-shift-rightSquareBracket = 'move-node-to-monitor next --wrap-around --focus-follows-window'
+
+# ------------------------------------------------------------
+# Direct snap hotkeys (no need to enter snap mode)
+# ------------------------------------------------------------
+# ------------------------------------------------------------
+# Direct snap hotkeys (no need to enter snap mode)
+# Half:
+#   ctrl+alt+h : left half
+#   ctrl+alt+l : right half
+#   ctrl+alt+k : top half
+#   ctrl+alt+j : bottom half
+#
+# Quarters:
+#   ctrl+alt+u : top-left
+#   ctrl+alt+i : top-right
+#   ctrl+alt+m : bottom-left
+#   ctrl+alt+n : bottom-right
+#
+# Thirds / Two-thirds (great for ultrawide):
+#   ctrl+alt+1 : left third
+#   ctrl+alt+2 : center third
+#   ctrl+alt+3 : right third
+#   ctrl+alt+4 : left two-thirds
+#   ctrl+alt+5 : right two-thirds
+#
+# Utility:
+#   ctrl+alt+0 : maximize
+#   ctrl+alt+c : center (70%W x 80%H)
+# ------------------------------------------------------------
+ctrl-alt-h = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" left']
+ctrl-alt-l = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" right']
+ctrl-alt-k = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" top']
+ctrl-alt-j = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" bottom']
+
+ctrl-alt-u = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" top-left']
+ctrl-alt-i = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" top-right']
+ctrl-alt-m = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" bottom-left']
+ctrl-alt-n = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" bottom-right']
+
+ctrl-alt-1 = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" left-third']
+ctrl-alt-2 = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" center-third']
+ctrl-alt-3 = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" right-third']
+ctrl-alt-4 = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" left-two-thirds']
+ctrl-alt-5 = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" right-two-thirds']
+
+ctrl-alt-0 = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" maximize']
+ctrl-alt-c = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" center']
+
+# ------------------------------------------------------------
+# RESIZE MODE (tiling-focused)
+# ------------------------------------------------------------
+[mode.resize.binding]
+esc = 'mode main'
+enter = 'mode main'
+
+# smart axis
+h = 'resize smart -50'
+l = 'resize smart +50'
+# opposite axis
+j = 'resize smart-opposite +50'
+k = 'resize smart-opposite -50'
+
+# bigger steps
+shift-h = 'resize smart -120'
+shift-l = 'resize smart +120'
+shift-j = 'resize smart-opposite +120'
+shift-k = 'resize smart-opposite -120'
+
+# ------------------------------------------------------------
+# SNAP MODE (floating + absolute placement + fine tuning)
+# ------------------------------------------------------------
+[mode.snap.binding]
+esc = 'mode main'
+enter = 'mode main'
+
+# --- Snap presets (hjkl 直觉) ---
+h = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" left']
+l = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" right']
+j = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" bottom-right']
+k = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/snap.js" top-right'] # 可选：你想要的话（下面脚本也给你加）
+
+# --- Move floating window to prev/next monitor (左右排列最舒服) ---
+u = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/screen.js" prev']
+o = ['layout floating', 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/screen.js" next']
+
+# --- Back to tiling when you want ---
+t = 'layout floating tiling'
+
+# --- Fine move (pixels) ---
+shift-h = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js" -40 0 0 0'
+shift-l = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js"  40 0 0 0'
+shift-k = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js" 0 -40 0 0'
+shift-j = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js" 0  40 0 0'
+
+ctrl-h = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js" -10 0 0 0'
+ctrl-l = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js"  10 0 0 0'
+ctrl-k = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js" 0 -10 0 0'
+ctrl-j = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js" 0  10 0 0'
+
+
+# --- Fine resize (pixels) ---
+minus = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js" 0 0 -60 -40'
+equal = 'exec-and-forget osascript -l JavaScript "${AEROSPACE_SCRIPTS}/nudge.js" 0 0  60  40'
+
+# ------------------------------------------------------------
+# SERVICE MODE (maintenance)
+# ------------------------------------------------------------
+[mode.service.binding]
+esc = ['reload-config', 'mode main']
+
+# Reset tree / rebalance
+r = ['flatten-workspace-tree', 'mode main']
+b = ['balance-sizes', 'mode main']
+
+# Toggle floating/tiling for current window
+f = ['layout floating tiling', 'mode main']
+
+# Close all but current (handy clean-up)
+backspace = ['close-all-windows-but-current', 'mode main']
+
+# Join-with (build containers quickly)
+alt-shift-h = ['join-with left', 'mode main']
+alt-shift-j = ['join-with down', 'mode main']
+alt-shift-k = ['join-with up', 'mode main']
+alt-shift-l = ['join-with right', 'mode main']
+
+# =========================================================
+# 自动浮动规则 (应用黑名单)
+# =========================================================
+# Common dialog titles (case-insensitive regex substring)
+[[on-window-detected]]
+if.window-title-regex-substring = 'open|save|preferences|setting|settings|export|import|打印|保存|打开|偏好|设置'
+check-further-callbacks = true
+run = ['layout floating']
+
+# 微信 (WeChat)
+[[on-window-detected]]
+if.app-id = 'com.tencent.xinWeChat'
+run = 'layout floating'
+
+# 腾讯会议 (Tencent Meeting)
+[[on-window-detected]]
+if.app-id = 'com.tencent.meeting'
+run = 'layout floating'
+
+# 系统设置 (System Settings) - 强烈建议加上这个
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+# Finder (访达) - 经常需要拖拽文件，建议浮动
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+run = 'layout floating'

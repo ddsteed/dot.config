@@ -1,0 +1,12 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    "provider": {
+        "zhipuai-coding-plan": {
+            "options": {
+                "apiKey": "4dcfa28fde558547432c195df0e954d7.glh07uNcrWZDq3Yc"
+            }
+        }
+    },
+    "model": "zhipuai-coding-plan/glm-4.6",
+    "small_model": "zhipuai-coding-plan/glm-4.5-air"
+}
