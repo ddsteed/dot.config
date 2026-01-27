@@ -63,7 +63,7 @@ outer.right =      1
 # === 强制浮动 (Floating) ===
 [[on-window-detected]]
 if.app-id = 'com.tencent.xinWeChat'
-run = 'layout floating'
+run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.tencent.meeting'
@@ -75,7 +75,7 @@ run = 'layout floating'
 
 [[on-window-detected]]
 if.app-id = 'com.apple.mail'
-run = 'layout floating'
+run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'

@@ -5,7 +5,14 @@ source "$HOME/.config/sketchybar/plugins/icon_map.sh"
 
 SID=$1
 
-# 1. 获取 App 列表
+# ==============================================================
+# 核心修复：主动获取当前激活的 Workspace ID
+# ==============================================================
+# 不再依赖 $FOCUSED_WORKSPACE 环境变量，而是直接问 Aerospace
+# 这样无论是什么事件触发 (关闭窗口、切换 App)，都能正确获得高亮状态
+FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)
+
+# 1. 获取该 Workspace 下的 App 列表
 APPS=$(aerospace list-windows --workspace "$SID" --format "%{app-name}" | sort -u)
 
 # 2. 判断可见性
@@ -15,13 +22,12 @@ else
     DRAWING="off"
 fi
 
-# 3. 样式逻辑 (颜色调整)
+# 3. 样式逻辑
 if [ "$SID" = "$FOCUSED_WORKSPACE" ]; then
     # 激活：纯白色
     COLOR=0xffffffff 
 else
-    # 非激活：亮灰色 (比之前亮了很多，在黑色背景下也能看清)
-    # 如果觉得还不够亮，可以改成 0xffcdd6f4
+    # 非激活：亮灰色
     COLOR=0xffa6adc8 
 fi
 
@@ -30,7 +36,6 @@ ICON_STR=""
 if [ -n "$APPS" ]; then
     while read -r app; do
         __icon_map "$app"
-        # 图标之间增加空格
         if [ -n "$icon_result" ]; then
             ICON_STR="$ICON_STR $icon_result "
         fi
@@ -45,3 +50,4 @@ sketchybar --set $NAME \
            icon.color=$COLOR \
            icon="$SID" \
            label="$ICON_STR"
+
