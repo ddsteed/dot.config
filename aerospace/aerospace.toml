@@ -15,14 +15,26 @@ enable-normalization-opposite-orientation-for-nested-containers = false
 # 默认布局：Tiles (平铺)
 default-root-container-layout = 'tiles'
 
+# === SketchyBar 联动配置 (放在这里！) ===
+after-startup-command = ['exec-and-forget sketchybar --trigger aerospace_workspace_change']
+
+exec-on-workspace-change = [
+    '/bin/bash', '-c',
+    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+]
+
 # 窗口间距 (简约风格)
 [gaps]
-inner.horizontal = 4
-inner.vertical =   4
-outer.left =       4
-outer.bottom =     4
-outer.top =        4
-outer.right =      4
+inner.horizontal = 2
+inner.vertical =   2
+outer.left =       1
+outer.bottom =     1
+
+# === 关键修改 ===
+# SketchyBar 高度 32 + 缝隙 1 = 33
+outer.top =        33
+
+outer.right =      1
 
 # ---------------------------------------------------------
 # 2. 窗口规则 (Window Rules)
@@ -44,8 +56,24 @@ if.app-id = 'com.apple.finder'
 run = 'layout floating'
 
 [[on-window-detected]]
+if.app-id = 'com.apple.mail'
+run = 'layout floating'
+
+[[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
 run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.DanPristupov.Fork'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.ranchero.NetNewsWire-Evergreen'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'org.zotero.zotero'
+run = ['layout floating', 'move-node-to-workspace 4']
 
 # === 应用分组优化 (App Grouping) ===
 
@@ -58,11 +86,12 @@ run = 'move-node-to-workspace 1'
 if.app-id = 'com.googlecode.iterm2'
 run = 'move-node-to-workspace 1'
 
-# Workspace 2: Browsing (Safari, Chrome)
+# Workspace 1: Browsing (Safari)
 [[on-window-detected]]
 if.app-id = 'com.apple.Safari'
 run = 'move-node-to-workspace 1'
 
+# Workspace 2: Browsing (Chrome)
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
 run = 'move-node-to-workspace 2'
@@ -77,14 +106,36 @@ run = 'move-node-to-workspace 3'
 if.app-name-regex-substring = 'Weread'
 run = 'move-node-to-workspace 3'
 
+# Workspace 4: News (Arc)
+[[on-window-detected]]
+if.app-id = 'company.thebrowser.Browser'
+run = 'move-node-to-workspace 4'
+
+[[on-window-detected]]
+if.app-id = 'io.github.clash-verge-rev.clash-verge-rev'
+run = 'move-node-to-workspace 4'
+
+# ==========================================================
+# SketchyBar 回调 (通用规则)
+# ==========================================================
+# 匹配所有 App，并在窗口出现时触发刷新
+[[on-window-detected]]
+if.app-id = '.*'  # 正则匹配所有 App ID
+run = ['layout tiling', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+
 # ---------------------------------------------------------
 # 3. 快捷键定义 (Keybindings)
 # ---------------------------------------------------------
 [mode.main.binding]
 
 # === 核心操作 ===
-# 打开终端 (需要你已安装 iTerm2)
-alt-enter = 'exec-and-forget open -a iTerm2'
+# 将当前窗口移动到下一个/上一个显示器
+alt-shift-n = 'move-node-to-monitor next'
+alt-shift-p = 'move-node-to-monitor prev'
+
+# 或者聚焦到下一个/上一个显示器 (光标过去，窗口不动)
+alt-n = 'focus-monitor next'
+alt-p = 'focus-monitor prev'
 
 # 设置快捷键 ctrl + alt + enter, 将当前应用进入或退出全屏状态
 # ctrl-alt-enter = 'fullscreen'
@@ -137,3 +188,4 @@ alt-e = 'layout tiles horizontal vertical'
 
 # 均衡分割 (让所有窗口大小一致)
 alt-equal = 'balance-sizes'
+

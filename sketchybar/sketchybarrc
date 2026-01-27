@@ -1,0 +1,122 @@
+#!/bin/bash
+
+# ==============================================================
+# 基础配置与变量
+# ==============================================================
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+FONT="Hack Nerd Font" # 建议统一使用 Nerd Font，能涵盖绝大多数图标
+WHITE=0xffffffff
+GRAY=0xff9399b2
+BLACK=0xff181926
+RED=0xffed8796
+BLUE=0xff8aadf4
+BG_COLOR=0xff24273a
+
+# 初始化 Bar
+sketchybar --bar height=32 \
+                 color=$BG_COLOR \
+                 position=top \
+                 sticky=on \
+                 padding_left=10 \
+                 padding_right=10 \
+                 font_family="$FONT" \
+                 y_offset=0 \
+                 blur_radius=0 
+
+# ==============================================================
+# 最左侧 Logo (彩色狐狸)
+# ==============================================================
+# icon="🦊" \
+# icon="" icon.color=0xfff5a97f \
+# icon="" icon.color=0xfff5a97f \
+
+sketchybar --add item logo left \
+           --set logo \
+                 icon.font="Hack Nerd Font:Regular:20.0" \
+                 icon="" icon.color=0xfff5a97f \
+                 icon.padding_left=15 \
+                 icon.padding_right=15 \
+                 label.drawing=off \
+                 background.drawing=off \
+                 click_script="open -a 'Firefox'"  # 点击打开 Firefox (可选)
+
+# ==============================================================
+# 事件注册
+# ==============================================================
+# 注册 Aerospace 事件
+sketchybar --add event aerospace_workspace_change
+# 注册输入法切换事件
+sketchybar --add event input_change "AppleSelectedInputSourcesChangedNotification"
+
+# ==============================================================
+# 左侧：Aerospace Workspaces (带程序图标)
+# ==============================================================
+# 使用 aerospace list-workspaces 动态获取所有 Space
+for sid in $(aerospace list-workspaces --all); do
+    sketchybar --add item space.$sid left \
+               --subscribe space.$sid aerospace_workspace_change \
+               --set space.$sid \
+                     background.color=0x44ffffff \
+                     background.corner_radius=5 \
+                     background.height=20 \
+                     background.drawing=off \
+                     icon="$sid" \
+                     icon.padding_left=10 \
+                     icon.padding_right=10 \
+                     label.padding_right=10 \
+                     label.font="$FONT:Regular:16.0" \
+                     script="$PLUGIN_DIR/aerospace.sh $sid" \
+                     click_script="aerospace workspace $sid"
+done
+
+# ==============================================================
+# 中间：当前窗口标题 (Front App)
+# ==============================================================
+sketchybar --add item front_app center \
+           --set front_app \
+           icon.drawing=off \
+           label.font="$FONT:Bold:14.0" \
+           label.color=$WHITE \
+           script="$PLUGIN_DIR/front_app.sh" \
+           --subscribe front_app front_app_switched
+
+# ==============================================================
+# 右侧：天气插件
+# ==============================================================
+sketchybar --add item weather right \
+           --set weather \
+                 update_freq=1200 \
+                 script="$PLUGIN_DIR/weather.sh" \
+                 icon="" \
+                 label="Loading..." \
+                 label.padding_left=10 \
+           --subscribe weather system_woke
+
+# ==============================================================
+# 右侧：分割线
+# ==============================================================
+sketchybar --add item separator_input_weather right \
+           --set separator_input_weather \
+                 icon="•" \
+                 icon.font="$FONT:Regular:16.0" \
+                 icon.color=0xff5c5f77 \
+                 icon.padding_left=10 \
+                 icon.padding_right=10 \
+                 label.drawing=off \
+                 background.drawing=off
+
+# ==============================================================
+# 右侧：输入法
+# ==============================================================
+sketchybar --add item input right \
+           --set input \
+                 script="$PLUGIN_DIR/input.sh" \
+                 icon="⌨️" \
+                 label="Loading..." \
+           --subscribe input input_change
+
+# ==============================================================
+# 最后：强制刷新所有组件
+# ==============================================================
+sketchybar --update
+
