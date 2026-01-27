@@ -15,34 +15,52 @@ enable-normalization-opposite-orientation-for-nested-containers = false
 # 默认布局：Tiles (平铺)
 default-root-container-layout = 'tiles'
 
-# === SketchyBar 联动配置 (放在这里！) ===
-after-startup-command = ['exec-and-forget sketchybar --trigger aerospace_workspace_change']
+# === SketchyBar 联动配置 ===
+# 启动时加载 SketchyBar
+after-startup-command = [
+    'exec-and-forget sketchybar'
+]
 
+# 切换工作区时通知 SketchyBar
 exec-on-workspace-change = [
     '/bin/bash', '-c',
     'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
 ]
 
-# 窗口间距 (简约风格)
+# ---------------------------------------------------------
+# 2. 窗口间距 (Gaps) - 修复报错版
+# ---------------------------------------------------------
+# 注意：由于你的 AeroSpace 版本暂不支持 [[gaps]] 数组语法，
+# 这里回滚到标准 [gaps] 表格语法。
+# ---------------------------------------------------------
+# 1. 针对笔记本内置屏幕 (MacBook)
+# 逻辑：系统会自动避让刘海，所以这里不需要留 SketchyBar 的高度
+# 只需要留一点点缝隙 (4px) 保持美观即可
+# [[gaps]]
+# monitor = 'built-in'
+# inner.horizontal = 2
+# inner.vertical =   2
+# outer.left =       1
+# outer.bottom =     1
+# outer.top =        4   # <--- 笔记本只要一点点缝隙
+# outer.right =      1
+
+# 2. 针对所有其他屏幕 (外接显示器)
+# 逻辑：外接屏没有刘海，需要手动留出 SketchyBar 的位置 (33px)
 [gaps]
+#monitor = 'all'
 inner.horizontal = 2
 inner.vertical =   2
 outer.left =       1
 outer.bottom =     1
-
-# === 关键修改 ===
-# SketchyBar 高度 32 + 缝隙 1 = 33
-outer.top =        33
-
+outer.top =        33  # <--- 外接屏留出状态栏高度
 outer.right =      1
 
 # ---------------------------------------------------------
-# 2. 窗口规则 (Window Rules)
+# 3. 窗口规则 (Window Rules)
 # ---------------------------------------------------------
 
 # === 强制浮动 (Floating) ===
-# 微信、腾讯会议、Finder、系统设置 -> 浮动模式
-# 这些窗口可以使用 Rectangle 进行管理
 [[on-window-detected]]
 if.app-id = 'com.tencent.xinWeChat'
 run = 'layout floating'
@@ -68,6 +86,18 @@ if.app-id = 'com.DanPristupov.Fork'
 run = 'layout floating'
 
 [[on-window-detected]]
+if.app-id = 'io.github.clash-verge-rev.clash-verge-rev'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'org.pqrs.Karabiner-Elements.Settings'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.superultra.Homerow'
+run = 'layout floating'
+
+[[on-window-detected]]
 if.app-id = 'com.ranchero.NetNewsWire-Evergreen'
 run = 'layout floating'
 
@@ -77,7 +107,7 @@ run = ['layout floating', 'move-node-to-workspace 4']
 
 # === 应用分组优化 (App Grouping) ===
 
-# Workspace 1: Coding (Emacs, iTerm2)
+# Workspace 1: Coding (Emacs, iTerm2, Safari)
 [[on-window-detected]]
 if.app-id = 'org.gnu.Emacs'
 run = 'move-node-to-workspace 1'
@@ -86,7 +116,6 @@ run = 'move-node-to-workspace 1'
 if.app-id = 'com.googlecode.iterm2'
 run = 'move-node-to-workspace 1'
 
-# Workspace 1: Browsing (Safari)
 [[on-window-detected]]
 if.app-id = 'com.apple.Safari'
 run = 'move-node-to-workspace 1'
@@ -96,17 +125,16 @@ run = 'move-node-to-workspace 1'
 if.app-id = 'com.google.Chrome'
 run = 'move-node-to-workspace 2'
 
-# Workspace 3: Reading (Calibre, WeChat Reading)
+# Workspace 3: Reading
 [[on-window-detected]]
 if.app-id = 'net.kovidgoyal.calibre'
 run = 'move-node-to-workspace 3'
 
 [[on-window-detected]]
-# 微信读书 (Mac App Store 版通常 ID 如下，如不同请通过 `aerospace list-apps` 查看)
-if.app-name-regex-substring = 'Weread'
+if.app-id = 'com.tencent.weread'
 run = 'move-node-to-workspace 3'
 
-# Workspace 4: News (Arc)
+# Workspace 4: News / Tools
 [[on-window-detected]]
 if.app-id = 'company.thebrowser.Browser'
 run = 'move-node-to-workspace 4'
@@ -115,77 +143,64 @@ run = 'move-node-to-workspace 4'
 if.app-id = 'io.github.clash-verge-rev.clash-verge-rev'
 run = 'move-node-to-workspace 4'
 
-# ==========================================================
-# SketchyBar 回调 (通用规则)
-# ==========================================================
-# 匹配所有 App，并在窗口出现时触发刷新
+# === SketchyBar 联动 (检测所有窗口变化) ===
 [[on-window-detected]]
-if.app-id = '.*'  # 正则匹配所有 App ID
-run = ['layout tiling', 'exec-and-forget sketchybar --trigger aerospace_workspace_change']
+if.app-id = '.*'
+run = 'exec-and-forget sketchybar --trigger aerospace_workspace_change'
 
 # ---------------------------------------------------------
-# 3. 快捷键定义 (Keybindings)
+# 4. 快捷键定义 (Keybindings)
 # ---------------------------------------------------------
 [mode.main.binding]
 
 # === 核心操作 ===
-# 将当前窗口移动到下一个/上一个显示器
 alt-shift-n = 'move-node-to-monitor next'
 alt-shift-p = 'move-node-to-monitor prev'
-
-# 或者聚焦到下一个/上一个显示器 (光标过去，窗口不动)
 alt-n = 'focus-monitor next'
 alt-p = 'focus-monitor prev'
 
-# 设置快捷键 ctrl + alt + enter, 将当前应用进入或退出全屏状态
-# ctrl-alt-enter = 'fullscreen'
+# 全屏
 shift-alt-enter = 'fullscreen'
 
-# 关闭当前聚焦的窗口
+# 关闭
 alt-q = 'close'
 
-# 切换平铺/浮动模式 (i3 习惯: Alt+Shift+Space)
-# 浮动后即可配合 Rectangle 使用
+# 浮动/平铺切换
 alt-shift-space = 'layout floating tiling'
 
-# 重新加载配置
+# 重载配置
 alt-shift-c = 'reload-config'
 
-# === 焦点移动 (i3 风格: Alt + h/j/k/l) ===
+# === 焦点移动 ===
 alt-h = 'focus left'
 alt-j = 'focus down'
 alt-k = 'focus up'
 alt-l = 'focus right'
 
-# === 窗口移动 (Alt + Shift + h/j/k/l) ===
+# === 窗口移动 ===
 alt-shift-h = 'move left'
 alt-shift-j = 'move down'
 alt-shift-k = 'move up'
 alt-shift-l = 'move right'
 
-# === 调整窗口大小 (Ctrl + Alt + h/j/k/l) ===
-# 这样不需要进入 Resize 模式，直接调整
+# === 调整大小 ===
 ctrl-alt-h = 'resize width -50'
 ctrl-alt-j = 'resize height +50'
 ctrl-alt-k = 'resize height -50'
 ctrl-alt-l = 'resize width +50'
 
-# === 工作区切换 (Alt + 1~4) ===
+# === 工作区切换 ===
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
 alt-4 = 'workspace 4'
 
-# === 移动窗口到工作区 (Alt + Shift + 1~4) ===
+# === 移动窗口到工作区 ===
 alt-shift-1 = 'move-node-to-workspace 1'
 alt-shift-2 = 'move-node-to-workspace 2'
 alt-shift-3 = 'move-node-to-workspace 3'
 alt-shift-4 = 'move-node-to-workspace 4'
 
-# === 布局调整 ===
-# 旋转布局 (横向/纵向切换)
+# === 布局 ===
 alt-e = 'layout tiles horizontal vertical'
-
-# 均衡分割 (让所有窗口大小一致)
 alt-equal = 'balance-sizes'
-

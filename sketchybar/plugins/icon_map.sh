@@ -6,9 +6,11 @@ function __icon_map() {
         "calibre" | "Calibre") icon_result="" ;;
         "Code" | "VSCode") icon_result="" ;;
         "Emacs") icon_result="" ;;
+        "Fork") icon_result="" ;;
         "Safari" | "Safari Technology Preview") icon_result="" ;;
         "Terminal" | "iTerm2" | "Warp") icon_result="" ;;
         "WeChat") icon_result="" ;;
+        "Weread" | "WeChat Read" | "微信读书") icon_result="" ;;
         "Wolfram" | "Wolfram Mathematica" | "Wolfram Desktop") icon_result="" ;;
         "Microsoft Word") icon_result="" ;;
         "Microsoft Excel") icon_result="" ;;

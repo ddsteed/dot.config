@@ -39,7 +39,7 @@ case "$CURRENT_SOURCE" in
         ;;
     *"ABC"* | *"US"* | *"keylayout.ABC"*)
         #LABEL="ENG"
-        LABEL="A "
+        LABEL="En "
         #ICON="🇺🇸"
         ICON=" "
         ;;

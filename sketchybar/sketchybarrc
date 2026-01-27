@@ -52,9 +52,13 @@ sketchybar --add event input_change "AppleSelectedInputSourcesChangedNotificatio
 # 左侧：Aerospace Workspaces (带程序图标)
 # ==============================================================
 # 使用 aerospace list-workspaces 动态获取所有 Space
+# ==============================================================
+# 左侧：Aerospace Workspaces (带程序图标)
+# ==============================================================
+# 使用 aerospace list-workspaces 动态获取所有 Space
 for sid in $(aerospace list-workspaces --all); do
     sketchybar --add item space.$sid left \
-               --subscribe space.$sid aerospace_workspace_change \
+               --subscribe space.$sid aerospace_workspace_change front_app_switched space_windows_change \
                --set space.$sid \
                      background.color=0x44ffffff \
                      background.corner_radius=5 \
