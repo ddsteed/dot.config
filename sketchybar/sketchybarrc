@@ -132,4 +132,4 @@ sketchybar --add item input right \
 # ==============================================================
 sketchybar --update
 
-"$HOME/.config/sketchybar/plugins/auto_gaps.sh"
+#"$HOME/.config/sketchybar/plugins/auto_gaps.sh"

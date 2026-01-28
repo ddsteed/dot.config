@@ -42,7 +42,7 @@ exec-on-workspace-change = [
 # inner.vertical =   2
 # outer.left =       1
 # outer.bottom =     1
-# outer.top = 1       4   # <--- 笔记本只要一点点缝隙
+# outer.top = 30       4   # <--- 笔记本只要一点点缝隙
 # outer.right =      1
 
 # 2. 针对所有其他屏幕 (外接显示器)
@@ -50,11 +50,11 @@ exec-on-workspace-change = [
 [gaps]
 #monitor = 'all'
 inner.horizontal = 2
-inner.vertical =   2
-outer.left =       1
-outer.bottom =     1
-outer.top = 1
-outer.right =      1
+inner.vertical = 2
+outer.left = 1
+outer.bottom = 1
+outer.top = 30
+outer.right = 1
 
 # ---------------------------------------------------------
 # 3. 窗口规则 (Window Rules)
