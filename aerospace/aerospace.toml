@@ -42,7 +42,7 @@ exec-on-workspace-change = [
 # inner.vertical =   2
 # outer.left =       1
 # outer.bottom =     1
-# outer.top =        4   # <--- 笔记本只要一点点缝隙
+# outer.top = 1       4   # <--- 笔记本只要一点点缝隙
 # outer.right =      1
 
 # 2. 针对所有其他屏幕 (外接显示器)
@@ -53,7 +53,7 @@ inner.horizontal = 2
 inner.vertical =   2
 outer.left =       1
 outer.bottom =     1
-outer.top =        33  # <--- 外接屏留出状态栏高度
+outer.top = 1
 outer.right =      1
 
 # ---------------------------------------------------------

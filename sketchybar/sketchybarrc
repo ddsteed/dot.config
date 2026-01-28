@@ -24,6 +24,14 @@ sketchybar --bar height=32 \
                  blur_radius=0 
 
 # ==============================================================
+# 监听显示器插拔
+# ==============================================================
+sketchybar --add item monitor_watcher left \
+           --set monitor_watcher drawing=off \
+           --subscribe monitor_watcher display_change \
+           --set monitor_watcher script="$PLUGIN_DIR/auto_gaps.sh"
+
+# ==============================================================
 # 最左侧 Logo (彩色狐狸)
 # ==============================================================
 # icon="🦊" \
@@ -124,3 +132,4 @@ sketchybar --add item input right \
 # ==============================================================
 sketchybar --update
 
+"$HOME/.config/sketchybar/plugins/auto_gaps.sh"

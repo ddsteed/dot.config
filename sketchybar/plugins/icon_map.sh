@@ -7,6 +7,7 @@ function __icon_map() {
         "Code" | "VSCode") icon_result="" ;;
         "Emacs") icon_result="" ;;
         "Fork") icon_result="" ;;
+        "Mail" | "Mailspring") icon_result="" ;;
         "Safari" | "Safari Technology Preview") icon_result="" ;;
         "Terminal" | "iTerm2" | "Warp") icon_result="" ;;
         "WeChat") icon_result="" ;;
