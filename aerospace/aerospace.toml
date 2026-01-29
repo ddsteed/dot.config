@@ -34,26 +34,16 @@ exec-on-workspace-change = [
 # 这里回滚到标准 [gaps] 表格语法。
 # ---------------------------------------------------------
 # 1. 针对笔记本内置屏幕 (MacBook)
-# 逻辑：系统会自动避让刘海，所以这里不需要留 SketchyBar 的高度
-# 只需要留一点点缝隙 (4px) 保持美观即可
-# [[gaps]]
-# monitor = 'built-in'
-# inner.horizontal = 2
-# inner.vertical =   2
-# outer.left =       1
-# outer.bottom =     1
-# outer.top = 30       4   # <--- 笔记本只要一点点缝隙
-# outer.right =      1
-
 # 2. 针对所有其他屏幕 (外接显示器)
-# 逻辑：外接屏没有刘海，需要手动留出 SketchyBar 的位置 (33px)
+# 逻辑：通过 plugins/auto_gaps.sh 来自动判断处于什么显示器
 [gaps]
-#monitor = 'all'
+# 窗口之间的间隙 (Inner Gaps)
 inner.horizontal = 2
 inner.vertical = 2
+# 屏幕边缘的间隙 
 outer.left = 1
 outer.bottom = 1
-outer.top = 30
+outer.top = 1
 outer.right = 1
 
 # ---------------------------------------------------------

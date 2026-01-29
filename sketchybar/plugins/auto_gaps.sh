@@ -20,7 +20,7 @@ NEW_GAP=30
 if [ "$MONITOR_COUNT" -eq 1 ]; then
     if echo "$MONITOR_NAMES" | grep -qE "$INTERNAL_KEYWORDS"; then
         MODE_NAME="笔记本单屏"
-        NEW_GAP=0  # 或者你想要的 1
+        NEW_GAP=1  # 或者你想要的 1
     fi
 fi
 
