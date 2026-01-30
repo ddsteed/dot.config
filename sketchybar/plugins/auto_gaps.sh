@@ -34,7 +34,7 @@ aerospace reload-config
 
 # === 4. 发送准确通知 ===
 # 直接使用上面定义好的 MODE_NAME 变量，避免再次逻辑判断出错
-osascript -e "display notification \"模式: $MODE_NAME | Gap: $NEW_GAP\" with title \"Aerospace 自动调整\""
+# osascript -e "display notification \"模式: $MODE_NAME | Gap: $NEW_GAP\" with title \"Aerospace 自动调整\""
 
 # === 5. (可选) 调试输出 ===
 # 如果运行有问题，在终端手动执行脚本可以看到下面的输出

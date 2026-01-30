@@ -43,7 +43,7 @@ inner.vertical = 2
 # 屏幕边缘的间隙 
 outer.left = 1
 outer.bottom = 1
-outer.top = 1
+outer.top = 30
 outer.right = 1
 
 # ---------------------------------------------------------
@@ -69,10 +69,6 @@ run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
-run = 'layout floating'
-
-[[on-window-detected]]
-if.app-id = 'com.DanPristupov.Fork'
 run = 'layout floating'
 
 [[on-window-detected]]
@@ -133,6 +129,10 @@ run = 'move-node-to-workspace 4'
 if.app-id = 'io.github.clash-verge-rev.clash-verge-rev'
 run = 'move-node-to-workspace 4'
 
+[[on-window-detected]]
+if.app-id = 'com.DanPristupov.Fork'
+run = 'move-node-to-workspace 4'
+
 # === SketchyBar 联动 (检测所有窗口变化) ===
 [[on-window-detected]]
 if.app-id = '.*'
@@ -144,8 +144,8 @@ run = 'exec-and-forget sketchybar --trigger aerospace_workspace_change'
 [mode.main.binding]
 
 # === 核心操作 ===
-alt-shift-n = 'move-node-to-monitor next'
-alt-shift-p = 'move-node-to-monitor prev'
+alt-shift-n = ['move-node-to-monitor next', 'focus-monitor next']  
+alt-shift-p = ['move-node-to-monitor prev', 'focus-monitor prev']
 alt-n = 'focus-monitor next'
 alt-p = 'focus-monitor prev'
 
@@ -188,16 +188,18 @@ alt-5 = 'workspace 5'
 alt-6 = 'workspace 6'
 alt-7 = 'workspace 7'
 alt-8 = 'workspace 8'
+alt-9 = 'workspace 9'
 
 # === 移动窗口到工作区 ===
-alt-shift-1 = 'move-node-to-workspace 1'
-alt-shift-2 = 'move-node-to-workspace 2'
-alt-shift-3 = 'move-node-to-workspace 3'
-alt-shift-4 = 'move-node-to-workspace 4'
-alt-shift-5 = 'move-node-to-workspace 5'
-alt-shift-6 = 'move-node-to-workspace 6'
-alt-shift-7 = 'move-node-to-workspace 7'
-alt-shift-8 = 'move-node-to-workspace 8'
+alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1'] 
+alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
+alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
+alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
+alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
+alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
+alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
+alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
+alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
 
 # === 布局 ===
 alt-e = 'layout tiles horizontal vertical'
