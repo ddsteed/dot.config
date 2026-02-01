@@ -1,0 +1,27 @@
+layout {
+    default_tab_template {
+        // 顶部标签栏
+        pane size=1 borderless=true {
+            plugin location="zellij:tab-bar"
+        }
+        children
+        // 底部状态栏
+        pane size=2 borderless=true {
+            plugin location="zellij:status-bar"
+        }
+    }
+
+    tab name="File Manager" focus=true {
+        pane split_direction="vertical" {
+            // 左侧 60% 运行 Yazi
+            pane command="yazi" {
+                size "60%"
+            }
+            // 右侧 40% 是命令行
+            pane {
+                size "40%"
+            }
+        }
+    }
+}
+

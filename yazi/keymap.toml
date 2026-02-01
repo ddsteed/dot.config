@@ -1,0 +1,20 @@
+[[mgr.prepend_keymap]]
+on = ["g", "z"]
+run = "plugin zoxide"
+desc = "Jump with zoxide"
+
+[[mgr.prepend_keymap]]
+on = ["f"]
+run = "plugin fzf"
+desc = "Find files with fzf"
+
+[[mgr.prepend_keymap]]
+on = ["<C-n>"]
+run = "arrow 1"
+desc = "Down"
+
+[[mgr.prepend_keymap]]
+on = ["<C-p>"]
+run = "arrow -1"
+desc = "Up"
+

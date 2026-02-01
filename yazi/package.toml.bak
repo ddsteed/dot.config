@@ -1,12 +1,7 @@
 [[plugin.deps]]
 use = "yazi-rs/plugins:git"
-rev = "de53d90"
-hash = "63b6c222bf2103b3023389dde5e2ecfe"
-
-[[plugin.deps]]
-use = "yazi-rs/plugins:full-border"
-rev = "de53d90"
-hash = "3996fc74044bc44144b323686f887e1"
+rev = "d078b01"
+hash = "270915fa8282a19908449530ff66f7e2"
 
 [[flavor.deps]]
 use = "956MB/vscode-dark-modern"
