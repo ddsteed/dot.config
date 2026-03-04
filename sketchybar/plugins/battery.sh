@@ -1,36 +1,88 @@
 #!/bin/bash
+# ==============================================================
+# 电池状态监控插件 (Geek Glass)
+# ==============================================================
+# @author    Hao Feng (F1)
+# @file      battery.sh
+# @desc      显示电池状态、充电指示和百分比进度条
+#
+# 显示内容：
+#   - 充电状态图标：↑ (充电中) / ↓ (放电中)
+#   - 电量百分比：数字显示
+#   - 进度条：滑块显示电量
+#   - 颜色分级：
+#     * ≤ 20%: 红色（电量低）
+#     * ≤ 50%: 黄色（中等）
+#     * > 50%: 绿色（充足）
+#
+# 更新频率：30 秒
+#
+# @version   1.0.0 (2025-03-04)
+#            - 初始版本，添加充电状态和颜色分级
+# ==============================================================
 
+# --------------------------------------------------------------
+# 获取电池信息
+# --------------------------------------------------------------
+# pmset: macOS 电源管理命令
+# -g batt: 获取电池信息
+# 2>/dev/null: 忽略错误输出
 INFO="$(pmset -g batt 2>/dev/null)"
+
+# --------------------------------------------------------------
+# 提取电量百分比
+# --------------------------------------------------------------
+# grep -Eo '[0-9]+%': 正则匹配百分比数字
+# head -n1: 取第一行
+# tr -d '%': 删除百分号，只保留数字
 PERCENT="$(echo "$INFO" | grep -Eo '[0-9]+%' | head -n1 | tr -d '%')"
 
+# --------------------------------------------------------------
+# 判断充电状态
+# --------------------------------------------------------------
+# grep -q "AC Power": 检查是否在使用交流电源（充电中）
 if echo "$INFO" | grep -q "AC Power"; then
-    STATE="↑"
-    STATE_COLOR="0xFF00FF6A"   # green
+    STATE="↑"                    # 充电中（向上箭头）
+    STATE_COLOR="0xFF00FF6A"      # 绿色
 else
-    STATE="↓"
-    STATE_COLOR="0xFFFF3B30"   # red
+    STATE="↓"                    # 放电中（向下箭头）
+    STATE_COLOR="0xFFFF3B30"      # 红色
 fi
 
+# --------------------------------------------------------------
+# 处理电量未知的情况
+# --------------------------------------------------------------
 if [[ -z "$PERCENT" ]]; then
     PERCENT="--"
 fi
 
-# Choose a color based on percentage (ARGB)
-# You can change these to whatever you like.
+# --------------------------------------------------------------
+# 根据电量选择进度条颜色（ARGB 格式）
+# --------------------------------------------------------------
+# 0xAARRGGBB: AA=Alpha, RR=Red, GG=Green, BB=Blue
 if [[ "$PERCENT" == "--" ]]; then
+    # 电量未知：白色
     BAR_COLOR="0xFFFFFFFF"
 else
     if (( PERCENT <= 20 )); then
-        BAR_COLOR="0xFFFF3B30"   # red
+        # 低电量：红色
+        BAR_COLOR="0xFFFF3B30"
     elif (( PERCENT <= 50 )); then
-        BAR_COLOR="0xFFFFCC00"   # yellow
+        # 中等电量：黄色
+        BAR_COLOR="0xFFFFCC00"
     else
-        BAR_COLOR="0xFF00FF6A"   # green
+        # 充足电量：绿色
+        BAR_COLOR="0xFF00FF6A"
     fi
 fi
 
+# --------------------------------------------------------------
+# 更新 SketchyBar 条目
+# --------------------------------------------------------------
+# battery.state: 充电状态图标
+# battery.pct: 电量百分比文本
+# battery.slider: 电量进度条
 sketchybar \
     --set battery.state label="$STATE" label.color="$STATE_COLOR" \
     --set battery.pct   label="${PERCENT}%" label.color="$BAR_COLOR" \
     --set battery.slider slider.percentage="$PERCENT" slider.highlight_color="$BAR_COLOR"
-

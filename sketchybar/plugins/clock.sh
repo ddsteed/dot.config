@@ -1,20 +1,62 @@
 #!/bin/bash
-# HH:MM clock
+# ==============================================================
+# 时钟和日期显示插件 (Geek Glass)
+# ==============================================================
+# @author    Hao Feng (F1)
+# @file      clock.sh
+# @desc      显示当前时间和日期
+#
+# 显示内容：
+#   - 时间 (clock 条目): HH:MM 格式 (24小时制)
+#   - 日期 (date 条目): MMM DD 格式 (英文月份缩写)
+#     例如: "Mar 04" 表示 3月4日
+#
+# 更新频率：10 秒
+#
+# 注意：此脚本同时更新 clock 和 date 两个条目
+#
+# @version   1.0.0 (2025-03-04)
+#            - 初始版本，合并时钟和日期更新逻辑
+# ==============================================================
+
+# --------------------------------------------------------------
+# 查找 sketchybar 可执行文件
+# --------------------------------------------------------------
+# LaunchAgent 的 PATH 可能不完整，需要手动查找
+# 1. 优先使用 which 找到的路径
 if command -v sketchybar >/dev/null 2>&1; then
   SB="$(command -v sketchybar)"
+# 2. 尝试 Homebrew Intel 路径
 elif [[ -x /opt/homebrew/bin/sketchybar ]]; then
   SB="/opt/homebrew/bin/sketchybar"
+# 3. 尝试 Homebrew ARM 路径
 elif [[ -x /usr/local/bin/sketchybar ]]; then
   SB="/usr/local/bin/sketchybar"
+# 4. 找不到就退出
 else
   exit 0
 fi
-# Force English month abbrev like "Mar"
+
+# --------------------------------------------------------------
+# 设置语言环境
+# --------------------------------------------------------------
+# 强制使用英文月份缩写 (Mar, Apr, May 等)
+# LC_TIME=en_US.POSIX: 美国英语 POSIX 格式
 export LC_TIME=en_US_POSIX
 
+# --------------------------------------------------------------
+# 获取当前时间和日期
+# --------------------------------------------------------------
+# date '+%H:%M': 时:分 (24小时制)
 time_str="$(date '+%H:%M')"
+# date '+%b %d': 月份缩写 日期 (如 "Mar 04")
 date_str="$(date '+%b %d')"
 
-# This script is used by the clock item; update both time and date items.
+# --------------------------------------------------------------
+# 更新 SketchyBar 条目
+# --------------------------------------------------------------
+# 注意：一条命令更新两个条目
+# clock: 更新时间
+# date: 更新日期
 "$SB" --set clock label="$time_str" \
       --set date  label="$date_str"

@@ -1,27 +1,75 @@
 #!/bin/sh
 # ==============================================================
-# SketchyBar Theme - Geek Glass (shared by scripts/config)
-# Colors: 0xAARRGGBB
+# SketchyBar 主题配置 - Geek Glass (共享主题文件)
+# ==============================================================
+# @author    Hao Feng (F1)
+# @file      theme.sh
+# @desc      定义 SketchyBar 的颜色主题，供所有插件脚本共享使用
+#
+# 颜色格式说明：
+#   0xAARRGGBB
+#   - AA: Alpha 通道 (不透明度，00=完全透明，FF=完全不透明)
+#   - RR: 红色通道 (00-FF)
+#   - GG: 绿色通道 (00-FF)
+#   - BB: 蓝色通道 (00-FF)
+#
+# 使用方式：
+#   在其他脚本中 source 此文件：
+#   source "$HOME/.config/sketchybar/theme.sh"
+#
+# 颜色说明：
+#   - FG: 前景色（主要文本/图标颜色）- 接近白色
+#   - MUTED: 静默色（次要文本/图标颜色）- 灰色
+#   - ACCENT: 强调色（聚焦工作区、高亮元素）- 青色
+#   - WORKSPACE_INACTIVE: 非聚焦工作区颜色 - 亮灰色
+#   - BAR_BG: 栏背景色（半透明玻璃效果）- 深灰色半透明
+#   - SEP_COLOR: 分隔符颜色（圆点）- 中灰色
+#
+# @version   1.0.0 (2025-02-05)
+#            - 初始版本，定义 Geek Glass 配色方案
+#            - 0x703F3F3F 半透明深灰背景 (约 44% 不透明度)
 # ==============================================================
 
-# Nerd Font recommended for icons
+# --------------------------------------------------------------
+# 字体配置
+# --------------------------------------------------------------
+# 使用 Nerd Font 以支持图标显示
+# 其他推荐字体: JetBrainsMono Nerd Font, FiraCode Nerd Font
 FONT="Hack Nerd Font"
 
-# Foreground / muted
+# --------------------------------------------------------------
+# 主题颜色定义
+# --------------------------------------------------------------
+
+# ========== 前景色组 ==========
+# FG: 主要前景色，用于主要文本和图标
+# 接近白色的浅灰色，提高可读性
 FG=0xFFF2F2F2
+
+# MUTED: 静默色，用于次要文本和图标
+# 灰色，用于不重要的信息
 MUTED=0xFFB3B9C5
 
-# Accent
+# ========== 强调色组 ==========
+# ACCENT: 强调色，用于聚焦工作区和需要高亮的元素
+# 青色，与深色背景形成良好对比
 ACCENT=0xFF66D9EF
-# Workspace (non-focused) - brighter than MUTED for clarity, won't affect focused
+
+# WORKSPACE_INACTIVE: 非聚焦工作区的颜色
+# 比 MUTED 亮一些，保证工作区编号清晰可见
 WORKSPACE_INACTIVE=0xFFD6DBE5
 
-
-# Bar glass background (semi-transparent)
-# More transparent: 0x22121720   More solid: 0x55121720
+# ========== 背景色组 ==========
+# BAR_BG: SketchyBar 栏的背景颜色
+# 半透明深灰色，配合 blur_radius 实现毛玻璃效果
+# 调整说明：
+#   - 更透明: 0x22121720 (约 13% 不透明度)
+#   - 当前值: 0x703F3F3F (约 44% 不透明度)
+#   - 更不透明: 0x55121720 (约 33% 不透明度)
 #BAR_BG=0x66121720
 BAR_BG=0x703F3F3F
 
-
-# Separator color (dots)
+# ========== 分隔符颜色 ==========
+# SEP_COLOR: 分隔各功能模块的圆点颜色
+# 中灰色，介于前景色和背景色之间
 SEP_COLOR=0xFF5A606B

@@ -1,34 +1,69 @@
 #!/bin/bash
 # ==============================================================
-# SketchyBar - Geek Glass (semi-transparent + blur)
-# Pure glass strip: item backgrounds OFF (except workspace underline)
+# SketchyBar - Geek Glass 配置 (半透明玻璃 + 模糊效果)
 # ==============================================================
-# Right side order (requested):
-#   weather • cpu/mem • time • input
-# Update:
-#   cpu/mem + time update every 5 seconds
+# @author    Hao Feng (F1)
+# @file      sketchybarrc
+# @desc      SketchyBar 主配置文件，定义所有条目、事件和样式
+#            设计风格：纯玻璃效果，条目背景关闭（工作区下划线除外）
+#
+# 布局说明：
+#   左侧：Logo + AeroSpace 工作区 (1-10)
+#   中间：前台应用图标 + 名称
+#   右侧：天气 • 内存 • CPU • 日期 时间 • 电池 • 输入法
+#
+# @version   1.0.0 (2025-03-04)
+#            - 初始版本，集成 AeroSpace 工作区管理
+#            - 添加 CPU/MEM/Clock/Date/Battery 监控
+#            - 集成 Squirrel/Rime 输入法检测
 # ==============================================================
 
+# --------------------------------------------------------------
+# 全局变量定义
+# --------------------------------------------------------------
+# 插件目录路径
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
 
-# Load theme (optional)
+# --------------------------------------------------------------
+# 加载主题配置 (如果存在)
+# --------------------------------------------------------------
+# 主题文件包含颜色定义：FG, MUTED, ACCENT, BAR_BG, SEP_COLOR 等
 THEME_FILE="$PLUGIN_DIR/theme.sh"
 if [[ -f "$THEME_FILE" ]]; then
   source "$THEME_FILE"
 fi
 
-# Fallbacks
+# --------------------------------------------------------------
+# 默认值回退 (当主题文件不存在或未定义某些变量时使用)
+# --------------------------------------------------------------
+# 字体：使用 Nerd Font 以支持图标显示
 FONT="${FONT:-Hack Nerd Font}"
+# 前景色：主要文本和图标颜色
 FG="${FG:-0xFFEDEDED}"
+# 静默色：次要文本和图标颜色（灰色）
 MUTED="${MUTED:-0xFF8A8F98}"
+# 强调色：聚焦工作区、高亮元素使用（青色）
 ACCENT="${ACCENT:-0xFF66D9EF}"
+# 栏背景色：半透明深灰色 (AA=0x33 约 20% 不透明度)
 BAR_BG="${BAR_BG:-0x33121720}"
+# 分隔符颜色：用于分隔各功能模块的圆点
 SEP_COLOR="${SEP_COLOR:-0xFF3B4048}"
+# 工作区数量：创建的工作区条目总数
 SPACE_COUNT="${SPACE_COUNT:-10}"
 
 # --------------------------------------------------------------
-# Bar: glass
+# Bar 基础配置：玻璃效果
 # --------------------------------------------------------------
+# height: 栏高度 (像素)
+# position: 栏位置 (top/bottom)
+# sticky: 在所有空间显示 (on/off)
+# color: 背景颜色
+# blur_radius: 模糊半径 (越大越模糊)
+# corner_radius: 圆角半径
+# y_offset: 垂直偏移量
+# margin: 外边距
+# padding_left/right: 内边距
+# shadow: 阴影效果
 sketchybar --bar \
   height=32 \
   position=top \
@@ -43,8 +78,14 @@ sketchybar --bar \
   shadow=on
 
 # --------------------------------------------------------------
-# Defaults: no item background
+# 默认样式配置：所有条目的默认样式
 # --------------------------------------------------------------
+# icon.font: 图标字体 (字体名:字重:大小)
+# label.font: 文本字体
+# icon.color: 图标颜色
+# label.color: 文本颜色
+# padding_left/right: 条目内边距
+# background.drawing: 关闭条目背景（纯玻璃效果）
 sketchybar --default \
   icon.font="$FONT:Bold:15.0" \
   label.font="$FONT:Semibold:14.0" \
@@ -55,16 +96,24 @@ sketchybar --default \
   background.drawing=off
 
 # --------------------------------------------------------------
-# Monitor hotplug watcher
+# 监视器热插拔监听器
 # --------------------------------------------------------------
+# 当显示器连接/断开时，自动调整 AeroSpace 窗口间距
+# display_change: 系统显示器变化事件
+# script: 触发时执行的脚本
 sketchybar --add item monitor_watcher left \
   --set monitor_watcher drawing=off \
   --subscribe monitor_watcher display_change \
   --set monitor_watcher script="$PLUGIN_DIR/auto_gaps.sh"
 
 # --------------------------------------------------------------
-# Left: Logo
+# 左侧：Logo 图标
 # --------------------------------------------------------------
+# 点击图标会打开 Finder
+# icon: Firefox 图标 (Nerd Font)
+# icon.font: 使用 JetBrains Mono Nerd Font
+# icon.color: 使用强调色（青色）
+# label.drawing=off: 不显示文本标签
 sketchybar --add item logo left \
   --set logo \
   icon.font="JetBrainsMono Nerd Font:Regular:13.0" \
@@ -76,14 +125,24 @@ sketchybar --add item logo left \
   click_script="open -a 'Finder'"
 
 # --------------------------------------------------------------
-# Events
+# 自定义事件定义
 # --------------------------------------------------------------
+# aerospace_workspace_change: AeroSpace 工作区切换事件
+# input_change: 输入法切换事件 (监听 macOS 系统通知)
 sketchybar --add event aerospace_workspace_change
 sketchybar --add event input_change "AppleSelectedInputSourcesChangedNotification"
 
 # --------------------------------------------------------------
-# Left: Aerospace Workspaces (accent underline on focused)
+# 左侧：AeroSpace 工作区 (聚焦时显示下划线高亮)
 # --------------------------------------------------------------
+# 循环创建 10 个工作区条目 (space.1 到 space.10)
+# 订阅事件：
+#   - aerospace_workspace_change: AeroSpace 工作区切换
+#   - space_change: macOS 空间切换
+#   - space_windows_change: 空间内窗口变化
+#   - front_app_switched: 前台应用切换
+# script: 渲染脚本 (传入工作区编号)
+# click_script: 点击时切换到对应工作区
 for sid in $(seq 1 "$SPACE_COUNT"); do
   sketchybar --add item space.$sid left \
     --subscribe space.$sid aerospace_workspace_change space_change space_windows_change front_app_switched \
@@ -98,8 +157,11 @@ for sid in $(seq 1 "$SPACE_COUNT"); do
 done
 
 # --------------------------------------------------------------
-# Center: Front App (icon + name)
+# 中间：前台应用 (图标 + 名称)
 # --------------------------------------------------------------
+# front_app_switched: 前台应用切换事件
+# icon.drawing=on: 显示应用图标
+# script: 获取前台应用信息并更新显示
 sketchybar --add item front_app center \
   --set front_app \
   icon.drawing=on \
@@ -110,7 +172,12 @@ sketchybar --add item front_app center \
   script="$PLUGIN_DIR/front_app.sh" \
   --subscribe front_app front_app_switched
 
-# Weather
+# --------------------------------------------------------------
+# 右侧：天气显示
+# --------------------------------------------------------------
+# update_freq: 更新频率 (秒) - 1200 秒 = 20 分钟
+# icon.drawing=off: 不显示图标 (天气图标通过 label 显示)
+# system_woke: 系统从睡眠唤醒事件
 sketchybar --add item weather right \
   --set weather \
   update_freq=1200 \
@@ -124,7 +191,10 @@ sketchybar --add item weather right \
   label.padding_left=6 \
   --subscribe weather system_woke
 
-# Separator (Weather • Sys)
+# --------------------------------------------------------------
+# 分隔符：天气 • 系统监控
+# --------------------------------------------------------------
+# 使用圆点 (•) 作为分隔符
 sketchybar --add item sep_weather_sys right \
   --set sep_weather_sys \
   icon="•" \
@@ -134,8 +204,10 @@ sketchybar --add item sep_weather_sys right \
   icon.padding_left=2 \
   icon.padding_right=2
 
-# MEM slider (updated by same script)
-# Small gap between CPU and MEM blocks
+# --------------------------------------------------------------
+# 内存监控：CPU 和 MEM 之间的间隔
+# --------------------------------------------------------------
+# 创建一个 4 像素宽的空白间隔
 sketchybar --add item sep_cpu_mem_gap right \
            --set sep_cpu_mem_gap \
            drawing=on \
@@ -144,6 +216,14 @@ sketchybar --add item sep_cpu_mem_gap right \
            label.drawing=off \
            background.drawing=off
 
+# --------------------------------------------------------------
+# 内存监控：进度滑块
+# --------------------------------------------------------------
+# slider.width: 滑块宽度
+# slider.percentage: 进度百分比
+# slider.highlight_color: 进度条高亮颜色（会动态变化）
+# slider.knob.drawing=off: 不显示滑块旋钮
+# slider.background.*: 滑块轨道样式
 sketchybar --add slider mem.slider right \
            --set mem.slider \
            drawing=on \
@@ -165,7 +245,11 @@ sketchybar --add slider mem.slider right \
            padding_right=0 \
            --subscribe mem.slider system_woke
 
-# MEM percentage label
+# --------------------------------------------------------------
+# 内存监控：百分比标签
+# --------------------------------------------------------------
+# label.width: 固定宽度以保持对齐
+# label.align: 右对齐
 sketchybar --add item mem.pct right \
            --set mem.pct \
            icon.drawing=off \
@@ -178,7 +262,11 @@ sketchybar --add item mem.pct right \
            label.padding_right=0 \
            background.drawing=off
 
-# CPU slider (v2.23-compatible: use slider.background.* for track styling)
+# --------------------------------------------------------------
+# CPU 监控：进度滑块 (v2.23+ 兼容)
+# --------------------------------------------------------------
+# update_freq: 更新频率 (秒)
+# script: CPU/MEM 更新脚本 (同时更新两者)
 sketchybar --add slider cpu.slider right \
            --set cpu.slider \
            drawing=on \
@@ -202,7 +290,9 @@ sketchybar --add slider cpu.slider right \
            padding_right=0 \
            --subscribe cpu.slider system_woke
 
-# CPU percentage label
+# --------------------------------------------------------------
+# CPU 监控：百分比标签
+# --------------------------------------------------------------
 sketchybar --add item cpu.pct right \
            --set cpu.pct \
            icon.drawing=off \
@@ -215,7 +305,9 @@ sketchybar --add item cpu.pct right \
            label.padding_right=0 \
            background.drawing=off
 
-# Separator (Sys • Clock)
+# --------------------------------------------------------------
+# 分隔符：系统监控 • 时钟
+# --------------------------------------------------------------
 sketchybar --add item sep_sys_clock right \
            --set sep_sys_clock \
            icon="•" \
@@ -225,22 +317,27 @@ sketchybar --add item sep_sys_clock right \
            icon.padding_left=2 \
            icon.padding_right=2
 
-# Clock (time) - requested: right of cpu/mem, left of input
+# --------------------------------------------------------------
+# 时钟：时间显示
+# --------------------------------------------------------------
+# update_freq: 更新频率 (秒)
+# label.font: 使用 SF Mono 等宽字体
 sketchybar --add item clock right \
            --set clock \
            update_freq=10 \
            script="$PLUGIN_DIR/clock.sh" \
            icon.drawing=off \
            label="--:--" \
-           #label.font="$FONT:Regular:13.0" \
            label.font="SF Mono:Regular:13" \
            label.color=$FG \
            label.padding_left=0 \
            label.padding_right=0 \
            --subscribe clock system_woke
 
-
-# Date (right of clock): "Mar 04"
+# --------------------------------------------------------------
+# 时钟：日期显示
+# --------------------------------------------------------------
+# 格式: "Mar 04" (英文月份缩写 + 日期)
 sketchybar --add item date right \
            --set date \
            icon.drawing=off \
@@ -251,7 +348,9 @@ sketchybar --add item date right \
            label.padding_right=0 \
            background.drawing=off
 
-# Separator (Clock • Battery)
+# --------------------------------------------------------------
+# 分隔符：时钟 • 电池
+# --------------------------------------------------------------
 sketchybar --add item sep_clock_batt right \
            --set sep_clock_batt \
            icon="•" \
@@ -261,14 +360,17 @@ sketchybar --add item sep_clock_batt right \
            icon.padding_left=2 \
            icon.padding_right=2
 
-# Battery state text
+# --------------------------------------------------------------
+# 电池：充电状态
+# --------------------------------------------------------------
+# update_freq: 更新频率 (秒)
+# label 显示: ↑ (充电) / ↓ (放电)
 sketchybar --add item battery.state right \
            --set battery.state \
            update_freq=30 \
            script="$PLUGIN_DIR/battery.sh" \
            icon.drawing=off \
            label="..." \
-           #label.font="$FONT:Regular:11.0" \
            label.font="SF Mono:Regular:11" \
            label.color=$FG \
            label.padding_left=0 \
@@ -276,7 +378,9 @@ sketchybar --add item battery.state right \
            background.drawing=off \
            --subscribe battery.state system_woke
 
-# Battery slider (progress bar)
+# --------------------------------------------------------------
+# 电池：电量进度滑块
+# --------------------------------------------------------------
 sketchybar --add slider battery.slider right \
            --set battery.slider \
            drawing=on \
@@ -298,19 +402,22 @@ sketchybar --add slider battery.slider right \
            padding_right=0 \
            --subscribe battery.slider system_woke
 
-# Battery percentage label
+# --------------------------------------------------------------
+# 电池：百分比标签
+# --------------------------------------------------------------
 sketchybar --add item battery.pct right \
            --set battery.pct \
            icon.drawing=off \
            label="--%" \
            label.font="$FONT:Regular:11.5" \
-           #label.font="SF Mono:Regular:10" \
            label.color=$FG \
            label.padding_left=2 \
            label.padding_right=0 \
            background.drawing=off
 
-# Separator (Battery • Input)
+# --------------------------------------------------------------
+# 分隔符：电池 • 输入法
+# --------------------------------------------------------------
 sketchybar --add item sep_batt_input right \
            --set sep_batt_input \
            icon="•" \
@@ -320,7 +427,12 @@ sketchybar --add item sep_batt_input right \
            icon.padding_left=2 \
            icon.padding_right=2
 
-# Input method
+# --------------------------------------------------------------
+# 输入法显示
+# --------------------------------------------------------------
+# icon: 键盘图标
+# label: 输入法标识 (Ψ=中文, A=英文)
+# input_change: 输入法切换事件
 sketchybar --add item input right \
   --set input \
   script="$PLUGIN_DIR/input.sh" \
@@ -331,9 +443,11 @@ sketchybar --add item input right \
   label.font="SF Mono:Bold:14" \
   --subscribe input input_change
 
-# -------------------------------------------------------------------------
-# Force right-side order: weather • mem • cpu • clock date • battery •input
-# -------------------------------------------------------------------------
+# --------------------------------------------------------------
+# 强制右侧排序
+# --------------------------------------------------------------
+# 确保右侧条目按以下顺序显示：
+# weather • mem • cpu • date clock • battery • input
 sketchybar --reorder \
            weather sep_weather_sys \
            mem.slider mem.pct sep_cpu_mem_gap cpu.slider cpu.pct sep_sys_clock \
@@ -341,4 +455,7 @@ sketchybar --reorder \
            battery.state battery.slider battery.pct sep_batt_input \
            input
 
+# --------------------------------------------------------------
+# 应用所有配置
+# --------------------------------------------------------------
 sketchybar --update

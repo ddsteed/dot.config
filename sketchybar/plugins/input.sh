@@ -1,72 +1,110 @@
 #!/bin/bash
-
 # ==============================================================
-# input.sh - 诊断版 (带详细日志)
+# 输入法显示插件 (Geek Glass)
+# ==============================================================
+# @author    Hao Feng (F1)
+# @file      input.sh
+# @desc      显示当前输入法状态（中文/英文）
+#
+# 输入法标识：
+#   - Ψ (或空白): Squirrel/Rime 中文输入
+#   - A: ABC 英文输入
+#   - 中 🇨🇳: 搜狗输入法
+#   - ??: 未知输入法
+#
+# 技术实现：
+#   使用 JXA (JavaScript for Automation) 通过 osascript
+#   调用 Carbon 框架获取当前输入源 ID
+#
+# 触发事件：input_change (系统输入法切换通知)
+#
+# @version   1.0.0 (2025-03-04)
+#            - 初始版本，支持 Squirrel/Rime 检测
+#            - 添加调试日志支持（可选）
 # ==============================================================
 
-# 定义日志文件
+# --------------------------------------------------------------
+# 调试日志配置
+# --------------------------------------------------------------
+# 如需启用调试，取消下面这行的注释：
 #LOG_FILE="/tmp/input_debug.log"
+LOG_FILE="/dev/null"  # 默认禁用日志
 
-# Load theme (for consistent colors)
-THEME_FILE="$HOME/.config/sketchybar/theme.sh"
-if [[ -f "$THEME_FILE" ]]; then
-    # shellcheck disable=SC1090
-    source "$THEME_FILE"
-fi
-FG="${FG:-0xFFEDEDED}"
-
-LOG_FILE="/dev/null"
-
+# --------------------------------------------------------------
 # 记录脚本开始运行的时间和触发者
+# --------------------------------------------------------------
+# $SENDER: SketchyBar 传入的事件触发者
 echo "--- $(date '+%H:%M:%S') 触发者: ${SENDER:-手动运行} ---" >> $LOG_FILE
 
-# 1. 确定组件名称
+# --------------------------------------------------------------
+# 1. 确定目标组件名称
+# --------------------------------------------------------------
 # 如果 SketchyBar 没传名字进来，默认为 "input"
-# 【关键】请确保你的 sketchybarrc 里定义的 item 名字也是 "input"
+# 【重要】请确保你的 sketchybarrc 里定义的 item 名字也是 "input"
 TARGET_NAME="${NAME:-input}"
 echo "目标组件: [$TARGET_NAME]" >> $LOG_FILE
 
-# 2. 获取输入法 ID (使用验证过的 JXA 代码)
+# --------------------------------------------------------------
+# 2. 获取输入法 ID
+# --------------------------------------------------------------
+# 使用 JXA (JavaScript for Automation) 代码
+# -l JavaScript: 指定使用 JavaScript
+# ObjC.import('Carbon'): 导入 Carbon 框架
+# TISCopyCurrentKeyboardInputSource(): 获取当前输入源
+# kTISPropertyInputSourceID: 输入源 ID 属性
 CURRENT_SOURCE=$(osascript -l JavaScript -e "
 function run() {
   ObjC.import('Carbon');
-  var source = $.TISCopyCurrentKeyboardInputSource();
-  var id = $.TISGetInputSourceProperty(source, $.kTISPropertyInputSourceID);
+  var source = \$.TISCopyCurrentKeyboardInputSource();
+  var id = \$.TISGetInputSourceProperty(source, \$.kTISPropertyInputSourceID);
   var nsString = ObjC.castRefToObject(id);
   return nsString.js;
 }" 2>/dev/null)
 
 echo "获取到的 ID: [$CURRENT_SOURCE]" >> $LOG_FILE
 
-# 3. 逻辑匹配
+# --------------------------------------------------------------
+# 3. 根据输入法 ID 匹配显示内容
+# --------------------------------------------------------------
+# case 语句支持模式匹配
+# *"Squirrel"*: 包含 "Squirrel" 字符串
+# |: 或运算符
 case "$CURRENT_SOURCE" in
+    # Squirrel / Rime 中文输入
     *"Squirrel"* | *"rime"*)
-        LABEL="Ψ"
-        #ICON="🐹"
-        #ICON=""
-        ICON=""
+        LABEL="Ψ"      # Psi 符号
+        ICON=""        # 不显示图标
+        #ICON="🐹"     # 备选：仓鼠图标
+        #ICON=""     # 备选：兔子图标
         ;;
+    # ABC 英文输入
     *"ABC"* | *"US"* | *"keylayout.ABC"*)
-        LABEL="A"
-        #ICON="🇺🇸"
-        ICON=""
+        LABEL="A"      # 大写字母 A
+        ICON=""        # 不显示图标
+        #ICON="🇺🇸"    # 备选：美国国旗
         ;;
+    # 搜狗输入法
     *"sogou"*)
-        LABEL="中"
-        ICON="🇨🇳"
+        LABEL="中"     # 中文
+        ICON="🇨🇳"    # 中国国旗
         ;;
+    # 未知输入法
     *)
-        LABEL="??"
-        ICON="❓"
+        LABEL="??"     # 问号
+        ICON="❓"      # 问号图标
         ;;
 esac
 
 echo "准备设置: 图标=[$ICON] 标签=[$LABEL]" >> $LOG_FILE
 
+# --------------------------------------------------------------
 # 4. 执行更新并记录结果
-# 捕获 sketchybar 的返回信息，看是否有报错 (比如 Item not found)
+# --------------------------------------------------------------
+# 捕获 sketchybar 的返回信息，查看是否有报错
+# 2>&1: 同时捕获标准输出和标准错误
 OUTPUT=$(sketchybar --set "$TARGET_NAME" icon="$ICON" label="$LABEL" 2>&1)
 
+# 检查退出状态码
 if [ $? -eq 0 ]; then
     echo "更新成功" >> $LOG_FILE
 else
@@ -74,4 +112,3 @@ else
 fi
 
 echo "------------------------------------------------" >> $LOG_FILE
-

@@ -1,48 +1,84 @@
-# =========================================================
-# AeroSpace Minimalist Config
-# i3-style | Alt-based | Rectangle-friendly
-# =========================================================
+# ============================================================
+# AeroSpace 平铺窗口管理器配置
+# ============================================================
+# @author    Hao Feng (F1)
+# @version   1.2.0
+# @updated   2026-03-04
+#
+# 版本历史：
+#   v1.2.0 (2026-03-04) - 优化注释，添加版本历史和作者信息
+#   v1.1.0 (2025-03-04) - 修复鼠须管焦点丢失问题，增加移动窗口焦点跟随
+#   v1.0.0 (2025-03-04) - 初始配置，基础平铺和快捷键设置
+#
+# 配置说明：
+#   - 风格：类 i3wm 平铺窗口管理
+#   - 快捷键：Alt 为主修饰键
+#   - 兼容：与 Rectangle 窗口管理工具友好共存
+#   - 联动：与 SketchyBar 状态栏深度集成
+# ============================================================
 
 # ---------------------------------------------------------
 # 1. 基础设置 (General Settings)
 # ---------------------------------------------------------
+
+# 登录时自动启动 AeroSpace
+# 设置为 true 可在系统登录后自动运行窗口管理器
 start-at-login = true
 
-# 0 = 关闭 accordion 的“提示边缘”，避免视觉上像窗口在变大小
+# 手风琴布局内边距
+# 设置为 0 可关闭"提示边缘"视觉效果，避免窗口调整大小时产生视觉干扰
+# 这是 AeroSpace 特有的动画效果，值为 0 时禁用
 accordion-padding = 0
 
-# 类似于 i3 的平铺逻辑
+# 容器标准化选项
+# 这两个选项控制 AeroSpace 如何处理嵌套容器
+# false = 保持 i3 风格的容器逻辑，不强制扁平化
+# false = 不强制嵌套容器使用相反方向
 enable-normalization-flatten-containers = false
 enable-normalization-opposite-orientation-for-nested-containers = false
 
-# 默认布局：Tiles (平铺)
+# 默认根容器布局
+# 'tiles' - 平铺模式，窗口自动填充可用空间
+# 其他可选：'accordion'（手风琴模式）
 default-root-container-layout = 'tiles'
 
-# === SketchyBar 联动配置 ===
-# 启动时加载 SketchyBar
+# ---------------------------------------------------------
+# SketchyBar 联动配置
+# ---------------------------------------------------------
+# AeroSpace 与 SketchyBar 状态栏的深度集成
+# 用于在状态栏显示工作区信息、窗口状态等
+
+# 启动后自动加载 SketchyBar
+# exec-and-forget 表示异步执行，不阻塞 AeroSpace 启动
 after-startup-command = [
     'exec-and-forget sketchybar'
 ]
 
-# 切换工作区时通知 SketchyBar
+# 工作区切换时触发 SketchyBar 更新
+# 通过环境变量 $AEROSPACE_FOCUSED_WORKSPACE 传递当前工作区编号
+# SketchyBar 可根据此变量高亮当前工作区图标
 exec-on-workspace-change = ['/bin/bash', '-lc',
   'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
 ]
 
 # ---------------------------------------------------------
-# 2. 窗口间距 (Gaps) - 修复报错版
+# 2. 窗口间距 (Gaps)
 # ---------------------------------------------------------
-# 注意：由于你的 AeroSpace 版本暂不支持 [[gaps]] 数组语法，
-# 这里回滚到标准 [gaps] 表格语法。
-# ---------------------------------------------------------
-# 1. 针对笔记本内置屏幕 (MacBook)
-# 2. 针对所有其他屏幕 (外接显示器)
-# 逻辑：通过 plugins/auto_gaps.sh 来自动判断处于什么显示器
+# 定义窗口之间的间隙以及窗口与屏幕边缘的间距
+# 配合 plugins/auto_gaps.sh 实现自适应内外屏幕间距
+
 [gaps]
-# 窗口之间的间隙 (Inner Gaps)
+# 内边距：窗口之间的间隙
+# horizontal - 水平方向（左右）窗口间隙
+# vertical - 垂直方向（上下）窗口间隙
 inner.horizontal = 2
 inner.vertical = 2
-# 屏幕边缘的间隙 
+
+# 外边距：窗口与屏幕边缘的间隙
+# left - 左边缘间隙（1像素，保持窗口紧贴左边缘）
+# bottom - 下边缘间隙（1像素，保持窗口紧贴下边缘）
+# top - 上边缘间隙（30像素，为 SketchyBar 状态栏留出空间）
+# right - 右边缘间隙（1像素，保持窗口紧贴右边缘）
 outer.left = 1
 outer.bottom = 1
 outer.top = 30
@@ -51,10 +87,18 @@ outer.right = 1
 # ---------------------------------------------------------
 # 3. 窗口规则 (Window Rules)
 # ---------------------------------------------------------
+# 定义特定应用窗口的行为规则
+# 包括：强制浮动、自动分配工作区等
 
-# === 强制浮动 (Floating) ===
-# 有些窗口不适合动态调整，需要脱离 aerospace 的管制
-# === 强制鼠须管输入法浮动 (修复输入焦点丢失问题) ===
+# === 强制浮动窗口 (Floating Windows) ===
+# 以下应用不适合平铺布局，强制使用浮动模式
+# 浮动窗口可以自由移动和调整大小，不受 AeroSpace 平铺管理
+
+# 鼠须管输入法 - 修复焦点丢失问题
+# 问题：鼠须管的候选词窗口在平铺模式下会导致输入焦点丢失
+# 解决方案：
+#   1. 强制浮动模式
+#   2. 执行 fix_squirrel_focus.sh 脚本进行焦点修复
 [[on-window-detected]]
 if.app-id = "im.rime.inputmethod.Squirrel"
 run = [
@@ -62,37 +106,48 @@ run = [
   "exec-and-forget ~/.config/aerospace/fix_squirrel_focus.sh"
 ]
 
+# 微信 - 使用浮动模式，方便同时查看聊天和桌面
 [[on-window-detected]]
 if.app-id = 'com.tencent.xinWeChat'
 run = ['layout floating']
 
+# 腾讯会议 - 浮动模式，方便共享屏幕和查看参会者
 [[on-window-detected]]
 if.app-id = 'com.tencent.meeting'
 run = 'layout floating'
 
+# Finder - macOS 文件管理器，浮动模式更符合传统使用习惯
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
 run = 'layout floating'
 
+# 邮件应用 - 浮动模式，方便处理多封邮件
 [[on-window-detected]]
 if.app-id = 'com.apple.mail'
 run = ['layout floating']
 
+# 系统设置 - 浮动模式，方便快速调整设置
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
 run = 'layout floating'
 
+# Karabiner-Elements 设置 - 键盘自定义工具设置界面
 [[on-window-detected]]
 if.app-id = 'org.pqrs.Karabiner-Elements.Settings'
 run = 'layout floating'
 
+# Homerow - 键盘学习应用，浮动模式更合适
 [[on-window-detected]]
 if.app-id = 'com.superultra.Homerow'
 run = 'layout floating'
 
-# === 应用分组优化 (App Grouping) ===
+# === 应用工作区自动分配 (Workspace Auto-Assignment) ===
+# 根据应用类型自动分配到对应工作区
+# if.during-aerospace-startup = true 仅在 AeroSpace 启动时生效
+# 不带此条件的规则每次窗口出现都会生效
 
-# Workspace 1: Coding (Emacs, iTerm2, Safari)
+# 工作区 1：代码开发 (Coding)
+# 包含：Emacs 编辑器、iTerm2 终端、Safari 浏览器
 [[on-window-detected]]
 if.app-id = 'org.gnu.Emacs'
 if.during-aerospace-startup = true
@@ -108,7 +163,9 @@ if.app-id = 'com.apple.Safari'
 if.during-aerospace-startup = true
 run = 'move-node-to-workspace 1'
 
-# Workspace 2: Browsing (Chrome)
+# 工作区 2：网页浏览 (Browsing)
+# 包含：Chrome 浏览器、Arc 浏览器
+# 注意：不带 during-aerospace-startup 条件，每次新建窗口都会移动到此工作区
 [[on-window-detected]]
 if.app-id = 'com.google.Chrome'
 run = 'move-node-to-workspace 2'
@@ -117,7 +174,8 @@ run = 'move-node-to-workspace 2'
 if.app-id = 'company.thebrowser.Browser'
 run = 'move-node-to-workspace 2'
 
-# Workspace 3: Reading
+# 工作区 3：阅读 (Reading)
+# 包含：Calibre 电子书管理、微信读书
 [[on-window-detected]]
 if.app-id = 'net.kovidgoyal.calibre'
 run = 'move-node-to-workspace 3'
@@ -126,7 +184,9 @@ run = 'move-node-to-workspace 3'
 if.app-id = 'com.tencent.weread'
 run = 'move-node-to-workspace 3'
 
-# Workspace 4: News / Tools
+# 工作区 4：资讯/工具 (News / Tools)
+# 包含：Clash Verge 代理、Fork Git 客户端、NetNewsWire 阅读器、Zotero 文献管理
+# 这些应用使用浮动模式，方便快速访问和操作
 [[on-window-detected]]
 if.app-id = 'io.github.clash-verge-rev.clash-verge-rev'
 run = ['layout floating', 'move-node-to-workspace 4']
@@ -143,63 +203,101 @@ run = ['layout floating', 'move-node-to-workspace 4']
 if.app-id = 'org.zotero.zotero'
 run = ['layout floating', 'move-node-to-workspace 4']
 
+# === 工作区与显示器绑定 ===
+# 将工作区固定到特定显示器
+# 'main' - 主显示器（通常是内置显示器或主外接显示器）
+# 'secondary' - 次显示器
 [workspace-to-monitor-force-assignment]
-1 = 'main'
-2 = 'main'
-3 = 'secondary'
-4 = 'secondary'
-# 3 = 'main'
-# 4 = 'main'
-# 5 = 'secondary'
-# 6 = 'secondary'
-# 7 = 'secondary'
-# 8 = 'secondary'
+1 = 'main'      # 代码开发在主屏
+2 = 'main'      # 网页浏览在主屏
+3 = 'secondary' # 阅读在副屏
+4 = 'secondary' # 工具在副屏
+
+# 已预留的显示器配置（供未来扩展）：
+# 5 = 'secondary'  # 临时工作区
+# 6 = 'secondary'  # 临时工作区
+# 7 = 'secondary'  # 临时工作区
+# 8 = 'secondary'  # 临时工作区
 
 # ---------------------------------------------------------
 # 4. 快捷键定义 (Keybindings)
 # ---------------------------------------------------------
+# 主模式绑定：正常工作模式下的快捷键
 [mode.main.binding]
 
-# === 核心操作 ===
-alt-shift-n = ['move-node-to-monitor next', 'focus-monitor next']  
+# === 多显示器操作 ===
+# 在多个显示器之间移动窗口和焦点
+
+# Alt+Shift+N - 将窗口移动到下一个显示器并跟随焦点
+# 适用于：将应用从笔记本屏幕拖到外接显示器
+alt-shift-n = ['move-node-to-monitor next', 'focus-monitor next']
+
+# Alt+Shift+P - 将窗口移动到工作区 5 并跟随切换
+# 适用于：快速将当前应用移到临时工作区
 alt-shift-p = ['move-node-to-workspace 5', 'workspace 5']
 
+# Alt+N - 切换焦点到下一个显示器
+# 适用于：在多个显示器间快速切换
 alt-n = 'focus-monitor next'
+
+# Alt+P - 切换焦点到上一个显示器
 alt-p = 'focus-monitor prev'
 
+# === 布局切换 ===
+# Alt+Comma - 在三种布局间循环切换
+# 切换顺序：accordion → horizontal → vertical → accordion...
+# accordion：手风琴布局（堆叠）
+# horizontal：水平平铺（左右分割）
+# vertical：垂直平铺（上下分割）
 alt-comma = 'layout accordion horizontal vertical'
 
-# 全屏
+# Shift+Alt+Enter - 全屏切换
+# 当前窗口占据整个显示器
 shift-alt-enter = 'fullscreen'
 
-# 关闭
+# === 窗口管理 ===
+# Alt+Q - 关闭当前窗口
+# 对应 macOS 的 Cmd+W
 alt-q = 'close'
 
-# 浮动/平铺切换
+# Alt+Shift+Space - 切换浮动/平铺模式
+# 在浮动窗口和平铺布局之间切换当前窗口状态
 alt-shift-space = 'layout floating tiling'
 
-# 重载配置
+# Alt+Shift+C - 重新加载配置文件
+# 修改配置后使用此快捷键立即生效，无需重启 AeroSpace
 alt-shift-c = 'reload-config'
 
-# === 焦点移动  ===
+# === 焦点移动 (Vim 风格) ===
+# 使用 Cmd+Shift+H/J/K/L 在窗口间移动焦点
+# H=左, J=下, K=上, L=右
+# 符合 Vim 键位习惯
 cmd-shift-h = 'focus left'
 cmd-shift-j = 'focus down'
 cmd-shift-k = 'focus up'
 cmd-shift-l = 'focus right'
 
-# === 窗口移动 ===
+# === 窗口移动 (Vim 风格) ===
+# 使用 Ctrl+Alt+H/J/K/L 移动窗口位置
+# H=左移, J=下移, K=上移, L=右移
+# 与焦点移动分开，避免误操作
 ctrl-alt-h = 'move left'
 ctrl-alt-j = 'move down'
 ctrl-alt-k = 'move up'
 ctrl-alt-l = 'move right'
 
-# === 调整大小 ===
+# === 窗口大小调整 (Vim 风格) ===
+# 使用 Alt+Shift+H/J/K/L 调整窗口大小
+# H/J = 减小宽度/高度, K/L = 增加宽度/高度
+# 每次调整 50 像素
 alt-shift-h = 'resize width -50'
 alt-shift-j = 'resize height +50'
 alt-shift-k = 'resize height -50'
 alt-shift-l = 'resize width +50'
 
-# === 工作区切换 ===
+# === 工作区快速切换 ===
+# Alt+1~8 - 切换到指定工作区
+# 工作区 4 特殊处理：切换时同时应用 accordion 布局
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
@@ -210,7 +308,9 @@ alt-7 = 'workspace 7'
 alt-8 = 'workspace 8'
 
 # === 移动窗口到工作区 ===
-alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1'] 
+# Alt+Shift+1~8 - 将当前窗口移动到指定工作区并跟随
+# 适用于：将应用归类到对应工作区
+alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1']
 alt-shift-2 = ['move-node-to-workspace 2', 'workspace 2']
 alt-shift-3 = ['move-node-to-workspace 3', 'workspace 3']
 alt-shift-4 = ['move-node-to-workspace 4', 'workspace 4']
@@ -219,6 +319,16 @@ alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
 alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
 alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
 
-# === 布局 ===
+# === 布局操作 ===
+# Alt+E - 切换平铺方向
+# 在 tiles 水平/垂直布局之间切换
 alt-e = 'layout tiles horizontal vertical'
+
+# Alt+= - 平衡窗口大小
+# 将当前工作区所有窗口调整为相同大小
+# 适用于：希望多个窗口平均分配屏幕空间
 alt-equal = 'balance-sizes'
+
+# ============================================================
+# 配置文件结束
+# ============================================================
