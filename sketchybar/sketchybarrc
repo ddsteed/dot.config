@@ -1,135 +1,344 @@
 #!/bin/bash
+# ==============================================================
+# SketchyBar - Geek Glass (semi-transparent + blur)
+# Pure glass strip: item backgrounds OFF (except workspace underline)
+# ==============================================================
+# Right side order (requested):
+#   weather • cpu/mem • time • input
+# Update:
+#   cpu/mem + time update every 5 seconds
+# ==============================================================
 
-# ==============================================================
-# 基础配置与变量
-# ==============================================================
 PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
-FONT="Hack Nerd Font" # 建议统一使用 Nerd Font，能涵盖绝大多数图标
-WHITE=0xffffffff
-GRAY=0xff9399b2
-BLACK=0xff181926
-RED=0xffed8796
-BLUE=0xff8aadf4
-BG_COLOR=0xff24273a
 
-# 初始化 Bar
-sketchybar --bar height=32 \
-                 color=$BG_COLOR \
-                 position=top \
-                 sticky=on \
-                 padding_left=10 \
-                 padding_right=10 \
-                 font_family="$FONT" \
-                 y_offset=0 \
-                 blur_radius=0 
+# Load theme (optional)
+THEME_FILE="$PLUGIN_DIR/theme.sh"
+if [[ -f "$THEME_FILE" ]]; then
+  source "$THEME_FILE"
+fi
 
-# ==============================================================
-# 监听显示器插拔
-# ==============================================================
+# Fallbacks
+FONT="${FONT:-Hack Nerd Font}"
+FG="${FG:-0xFFEDEDED}"
+MUTED="${MUTED:-0xFF8A8F98}"
+ACCENT="${ACCENT:-0xFF66D9EF}"
+BAR_BG="${BAR_BG:-0x33121720}"
+SEP_COLOR="${SEP_COLOR:-0xFF3B4048}"
+SPACE_COUNT="${SPACE_COUNT:-10}"
+
+# --------------------------------------------------------------
+# Bar: glass
+# --------------------------------------------------------------
+sketchybar --bar \
+  height=32 \
+  position=top \
+  sticky=on \
+  color=$BAR_BG \
+  blur_radius=10 \
+  corner_radius=8 \
+  y_offset=0 \
+  margin=0 \
+  padding_left=8 \
+  padding_right=8 \
+  shadow=on
+
+# --------------------------------------------------------------
+# Defaults: no item background
+# --------------------------------------------------------------
+sketchybar --default \
+  icon.font="$FONT:Bold:15.0" \
+  label.font="$FONT:Semibold:14.0" \
+  icon.color=$FG \
+  label.color=$FG \
+  padding_left=8 \
+  padding_right=8 \
+  background.drawing=off
+
+# --------------------------------------------------------------
+# Monitor hotplug watcher
+# --------------------------------------------------------------
 sketchybar --add item monitor_watcher left \
-           --set monitor_watcher drawing=off \
-           --subscribe monitor_watcher display_change \
-           --set monitor_watcher script="$PLUGIN_DIR/auto_gaps.sh"
+  --set monitor_watcher drawing=off \
+  --subscribe monitor_watcher display_change \
+  --set monitor_watcher script="$PLUGIN_DIR/auto_gaps.sh"
 
-# ==============================================================
-# 最左侧 Logo (彩色狐狸)
-# ==============================================================
-# icon="🦊" \
-# icon="" icon.color=0xfff5a97f \
-# icon="" icon.color=0xfff5a97f \
-
+# --------------------------------------------------------------
+# Left: Logo
+# --------------------------------------------------------------
 sketchybar --add item logo left \
-           --set logo \
-                 icon.font="Hack Nerd Font:Regular:20.0" \
-                 icon="" icon.color=0xfff5a97f \
-                 icon.padding_left=15 \
-                 icon.padding_right=15 \
-                 label.drawing=off \
-                 background.drawing=off \
-                 click_script="open -a 'Firefox'"  # 点击打开 Firefox (可选)
+  --set logo \
+  icon.font="JetBrainsMono Nerd Font:Regular:13.0" \
+  icon="" \
+  icon.color=$ACCENT \
+  icon.padding_left=6 \
+  icon.padding_right=10 \
+  label.drawing=off \
+  click_script="open -a 'Finder'"
 
-# ==============================================================
-# 事件注册
-# ==============================================================
-# 注册 Aerospace 事件
+# --------------------------------------------------------------
+# Events
+# --------------------------------------------------------------
 sketchybar --add event aerospace_workspace_change
-# 注册输入法切换事件
 sketchybar --add event input_change "AppleSelectedInputSourcesChangedNotification"
 
-# ==============================================================
-# 左侧：Aerospace Workspaces (带程序图标)
-# ==============================================================
-# 使用 aerospace list-workspaces 动态获取所有 Space
-# ==============================================================
-# 左侧：Aerospace Workspaces (带程序图标)
-# ==============================================================
-# 使用 aerospace list-workspaces 动态获取所有 Space
-for sid in $(aerospace list-workspaces --all); do
-    sketchybar --add item space.$sid left \
-               --subscribe space.$sid aerospace_workspace_change front_app_switched space_windows_change \
-               --set space.$sid \
-                     background.color=0x44ffffff \
-                     background.corner_radius=5 \
-                     background.height=20 \
-                     background.drawing=off \
-                     icon="$sid" \
-                     icon.padding_left=20 \
-                     icon.padding_right=10 \
-                     label.padding_right=20 \
-                     label.font="$FONT:Regular:16.0" \
-                     script="$PLUGIN_DIR/aerospace.sh $sid" \
-                     click_script="aerospace workspace $sid"
+# --------------------------------------------------------------
+# Left: Aerospace Workspaces (accent underline on focused)
+# --------------------------------------------------------------
+for sid in $(seq 1 "$SPACE_COUNT"); do
+  sketchybar --add item space.$sid left \
+    --subscribe space.$sid aerospace_workspace_change space_change space_windows_change front_app_switched \
+    --set space.$sid \
+    icon="$sid" \
+    icon.padding_left=10 \
+    icon.padding_right=8 \
+    label.padding_right=10 \
+    label.font="$FONT:Regular:13" \
+    script="$PLUGIN_DIR/aerospace.sh $sid" \
+    click_script="aerospace workspace $sid"
 done
 
-# ==============================================================
-# 中间：当前窗口标题 (Front App)
-# ==============================================================
+# --------------------------------------------------------------
+# Center: Front App (icon + name)
+# --------------------------------------------------------------
 sketchybar --add item front_app center \
-           --set front_app \
-           icon.drawing=off \
-           label.font="$FONT:Bold:14.0" \
-           label.color=$WHITE \
-           script="$PLUGIN_DIR/front_app.sh" \
-           --subscribe front_app front_app_switched
+  --set front_app \
+  icon.drawing=on \
+  icon.font="$FONT:Regular:13.0" \
+  icon.padding_right=6 \
+  label.font="$FONT:Bold:14.0" \
+  label.color=$FG \
+  script="$PLUGIN_DIR/front_app.sh" \
+  --subscribe front_app front_app_switched
 
-# ==============================================================
-# 右侧：天气插件
-# ==============================================================
+# Weather
 sketchybar --add item weather right \
-           --set weather \
-                 update_freq=1200 \
-                 script="$PLUGIN_DIR/weather.sh" \
-                 icon="" \
-                 label="Loading..." \
-                 label.padding_left=10 \
-           --subscribe weather system_woke
+  --set weather \
+  update_freq=1200 \
+  script="$PLUGIN_DIR/weather.sh" \
+  icon="" \
+  icon.drawing=off \
+  icon.color=$MUTED \
+  label="..." \
+  label.font="SF Mono:Regular:13" \
+  label.y_offset=-1 \
+  label.padding_left=6 \
+  --subscribe weather system_woke
 
-# ==============================================================
-# 右侧：分割线
-# ==============================================================
-sketchybar --add item separator_input_weather right \
-           --set separator_input_weather \
-                 icon="•" \
-                 icon.font="$FONT:Regular:16.0" \
-                 icon.color=0xff5c5f77 \
-                 icon.padding_left=10 \
-                 icon.padding_right=10 \
-                 label.drawing=off \
-                 background.drawing=off
+# Separator (Weather • Sys)
+sketchybar --add item sep_weather_sys right \
+  --set sep_weather_sys \
+  icon="•" \
+  icon.font="$FONT:Regular:13.0" \
+  icon.color=$SEP_COLOR \
+  label.drawing=off \
+  icon.padding_left=2 \
+  icon.padding_right=2
 
-# ==============================================================
-# 右侧：输入法
-# ==============================================================
+# MEM slider (updated by same script)
+# Small gap between CPU and MEM blocks
+sketchybar --add item sep_cpu_mem_gap right \
+           --set sep_cpu_mem_gap \
+           drawing=on \
+           width=4 \
+           icon.drawing=off \
+           label.drawing=off \
+           background.drawing=off
+
+sketchybar --add slider mem.slider right \
+           --set mem.slider \
+           drawing=on \
+           icon.drawing=off \
+           label.drawing=off \
+           background.drawing=off \
+           slider.width=32 \
+           slider.percentage=60 \
+           slider.highlight_color=0xFF00FF6A \
+           slider.knob.drawing=off \
+           slider.background.drawing=on \
+           slider.background.color=0x55222222 \
+           slider.background.border_width=1 \
+           slider.background.border_color=0x55FFFFFF \
+           slider.background.corner_radius=6 \
+           slider.background.height=10 \
+           y_offset=0 \
+           padding_left=2 \
+           padding_right=0 \
+           --subscribe mem.slider system_woke
+
+# MEM percentage label
+sketchybar --add item mem.pct right \
+           --set mem.pct \
+           icon.drawing=off \
+           label="--%" \
+           label.font="SF Mono:Regular:11" \
+           label.color=$FG \
+           label.width=36 \
+           label.align=right \
+           label.padding_left=2 \
+           label.padding_right=0 \
+           background.drawing=off
+
+# CPU slider (v2.23-compatible: use slider.background.* for track styling)
+sketchybar --add slider cpu.slider right \
+           --set cpu.slider \
+           drawing=on \
+           update_freq=5 \
+           script="$PLUGIN_DIR/sys_rainbow.sh" \
+           icon.drawing=off \
+           label.drawing=off \
+           background.drawing=off \
+           slider.width=32 \
+           slider.percentage=35 \
+           slider.highlight_color=0xFF00FF6A \
+           slider.knob.drawing=off \
+           slider.background.drawing=on \
+           slider.background.color=0x55222222 \
+           slider.background.border_width=1 \
+           slider.background.border_color=0x55FFFFFF \
+           slider.background.corner_radius=6 \
+           slider.background.height=10 \
+           y_offset=0 \
+           padding_left=0 \
+           padding_right=0 \
+           --subscribe cpu.slider system_woke
+
+# CPU percentage label
+sketchybar --add item cpu.pct right \
+           --set cpu.pct \
+           icon.drawing=off \
+           label="--%" \
+           label.font="SF Mono:Regular:11" \
+           label.color=$FG \
+           label.width=36 \
+           label.align=right \
+           label.padding_left=2 \
+           label.padding_right=0 \
+           background.drawing=off
+
+# Separator (Sys • Clock)
+sketchybar --add item sep_sys_clock right \
+           --set sep_sys_clock \
+           icon="•" \
+           icon.font="$FONT:Regular:13.0" \
+           icon.color=$SEP_COLOR \
+           label.drawing=off \
+           icon.padding_left=2 \
+           icon.padding_right=2
+
+# Clock (time) - requested: right of cpu/mem, left of input
+sketchybar --add item clock right \
+           --set clock \
+           update_freq=10 \
+           script="$PLUGIN_DIR/clock.sh" \
+           icon.drawing=off \
+           label="--:--" \
+           #label.font="$FONT:Regular:13.0" \
+           label.font="SF Mono:Regular:13" \
+           label.color=$FG \
+           label.padding_left=0 \
+           label.padding_right=0 \
+           --subscribe clock system_woke
+
+
+# Date (right of clock): "Mar 04"
+sketchybar --add item date right \
+           --set date \
+           icon.drawing=off \
+           label="--- --" \
+           label.font="SF Mono:Regular:13" \
+           label.color=$FG \
+           label.padding_left=2 \
+           label.padding_right=0 \
+           background.drawing=off
+
+# Separator (Clock • Battery)
+sketchybar --add item sep_clock_batt right \
+           --set sep_clock_batt \
+           icon="•" \
+           icon.font="$FONT:Regular:13.0" \
+           icon.color=$SEP_COLOR \
+           label.drawing=off \
+           icon.padding_left=2 \
+           icon.padding_right=2
+
+# Battery state text
+sketchybar --add item battery.state right \
+           --set battery.state \
+           update_freq=30 \
+           script="$PLUGIN_DIR/battery.sh" \
+           icon.drawing=off \
+           label="..." \
+           #label.font="$FONT:Regular:11.0" \
+           label.font="SF Mono:Regular:11" \
+           label.color=$FG \
+           label.padding_left=0 \
+           label.padding_right=2 \
+           background.drawing=off \
+           --subscribe battery.state system_woke
+
+# Battery slider (progress bar)
+sketchybar --add slider battery.slider right \
+           --set battery.slider \
+           drawing=on \
+           icon.drawing=off \
+           label.drawing=off \
+           background.drawing=off \
+           slider.width=32 \
+           slider.percentage=50 \
+           slider.highlight_color=0xFF00FF6A \
+           slider.knob.drawing=off \
+           slider.background.drawing=on \
+           slider.background.color=0x55222222 \
+           slider.background.border_width=1 \
+           slider.background.border_color=0x55FFFFFF \
+           slider.background.corner_radius=6 \
+           slider.background.height=10 \
+           y_offset=0 \
+           padding_left=0 \
+           padding_right=0 \
+           --subscribe battery.slider system_woke
+
+# Battery percentage label
+sketchybar --add item battery.pct right \
+           --set battery.pct \
+           icon.drawing=off \
+           label="--%" \
+           label.font="$FONT:Regular:11.5" \
+           #label.font="SF Mono:Regular:10" \
+           label.color=$FG \
+           label.padding_left=2 \
+           label.padding_right=0 \
+           background.drawing=off
+
+# Separator (Battery • Input)
+sketchybar --add item sep_batt_input right \
+           --set sep_batt_input \
+           icon="•" \
+           icon.font="$FONT:Regular:13.0" \
+           icon.color=$SEP_COLOR \
+           label.drawing=off \
+           icon.padding_left=2 \
+           icon.padding_right=2
+
+# Input method
 sketchybar --add item input right \
-           --set input \
-                 script="$PLUGIN_DIR/input.sh" \
-                 icon="⌨️" \
-                 label="Loading..." \
-           --subscribe input input_change
+  --set input \
+  script="$PLUGIN_DIR/input.sh" \
+  icon="⌨︎" \
+  icon.color=$FG \
+  label="..." \
+  label.color=$FG \
+  label.font="SF Mono:Bold:14" \
+  --subscribe input input_change
 
-# ==============================================================
-# 最后：强制刷新所有组件
-# ==============================================================
+# -------------------------------------------------------------------------
+# Force right-side order: weather • mem • cpu • clock date • battery •input
+# -------------------------------------------------------------------------
+sketchybar --reorder \
+           weather sep_weather_sys \
+           mem.slider mem.pct sep_cpu_mem_gap cpu.slider cpu.pct sep_sys_clock \
+           date clock sep_clock_batt \
+           battery.state battery.slider battery.pct sep_batt_input \
+           input
+
 sketchybar --update
-
-#"$HOME/.config/sketchybar/plugins/auto_gaps.sh"

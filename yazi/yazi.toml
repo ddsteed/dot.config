@@ -32,3 +32,13 @@ edit = [
 open = [
   { run = "open \"$@\"", desc = "macOS Open" },
 ]
+
+[plugin]
+prepend_previewers = [
+  { mime = "image/hei?", run = "heic-ql" },
+]
+
+prepend_preloaders = [
+  { mime = "image/hei?", run = "heic-ql" },
+]
+

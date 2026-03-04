@@ -17,7 +17,13 @@ if [ "$SENDER" = "space_windows_change" ]; then
   if [ "$APPS" != "" ]; then
     while read -r app; do
       __icon_map "$app"
-      ICON_STR="$ICON_STR $icon_result"
+      [ -z "$icon_result" ] && continue
+
+      if [ -z "$ICON_STR" ]; then
+        ICON_STR="$icon_result"
+      else
+        ICON_STR="$ICON_STR  $icon_result"
+      fi
     done <<< "$APPS"
   fi
 

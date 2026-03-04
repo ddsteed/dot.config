@@ -8,6 +8,9 @@
 # ---------------------------------------------------------
 start-at-login = true
 
+# 0 = 关闭 accordion 的“提示边缘”，避免视觉上像窗口在变大小
+accordion-padding = 0
+
 # 类似于 i3 的平铺逻辑
 enable-normalization-flatten-containers = false
 enable-normalization-opposite-orientation-for-nested-containers = false
@@ -22,9 +25,8 @@ after-startup-command = [
 ]
 
 # 切换工作区时通知 SketchyBar
-exec-on-workspace-change = [
-    '/bin/bash', '-c',
-    'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
+exec-on-workspace-change = ['/bin/bash', '-lc',
+  'sketchybar --trigger aerospace_workspace_change FOCUSED_WORKSPACE=$AEROSPACE_FOCUSED_WORKSPACE'
 ]
 
 # ---------------------------------------------------------
@@ -51,6 +53,7 @@ outer.right = 1
 # ---------------------------------------------------------
 
 # === 强制浮动 (Floating) ===
+# 有些窗口不适合动态调整，需要脱离 aerospace 的管制
 # === 强制鼠须管输入法浮动 (修复输入焦点丢失问题) ===
 [[on-window-detected]]
 if.app-id = "im.rime.inputmethod.Squirrel"
@@ -80,10 +83,6 @@ if.app-id = 'com.apple.systempreferences'
 run = 'layout floating'
 
 [[on-window-detected]]
-if.app-id = 'io.github.clash-verge-rev.clash-verge-rev'
-run = 'layout floating'
-
-[[on-window-detected]]
 if.app-id = 'org.pqrs.Karabiner-Elements.Settings'
 run = 'layout floating'
 
@@ -91,27 +90,22 @@ run = 'layout floating'
 if.app-id = 'com.superultra.Homerow'
 run = 'layout floating'
 
-[[on-window-detected]]
-if.app-id = 'com.ranchero.NetNewsWire-Evergreen'
-run = 'layout floating'
-
-[[on-window-detected]]
-if.app-id = 'org.zotero.zotero'
-run = ['layout floating', 'move-node-to-workspace 4']
-
 # === 应用分组优化 (App Grouping) ===
 
 # Workspace 1: Coding (Emacs, iTerm2, Safari)
 [[on-window-detected]]
 if.app-id = 'org.gnu.Emacs'
+if.during-aerospace-startup = true
 run = 'move-node-to-workspace 1'
 
 [[on-window-detected]]
 if.app-id = 'com.googlecode.iterm2'
+if.during-aerospace-startup = true
 run = 'move-node-to-workspace 1'
 
 [[on-window-detected]]
 if.app-id = 'com.apple.Safari'
+if.during-aerospace-startup = true
 run = 'move-node-to-workspace 1'
 
 # Workspace 2: Browsing (Chrome)
@@ -135,16 +129,31 @@ run = 'move-node-to-workspace 3'
 # Workspace 4: News / Tools
 [[on-window-detected]]
 if.app-id = 'io.github.clash-verge-rev.clash-verge-rev'
-run = 'move-node-to-workspace 4'
+run = ['layout floating', 'move-node-to-workspace 4']
 
 [[on-window-detected]]
 if.app-id = 'com.DanPristupov.Fork'
 run = 'move-node-to-workspace 4'
 
-# === SketchyBar 联动 (检测所有窗口变化) ===
-# [[on-window-detected]]
-# if.app-id = '.*'
-# run = 'exec-and-forget sketchybar --trigger aerospace_workspace_change'
+[[on-window-detected]]
+if.app-id = 'com.ranchero.NetNewsWire-Evergreen'
+run = ['layout floating', 'move-node-to-workspace 4']
+
+[[on-window-detected]]
+if.app-id = 'org.zotero.zotero'
+run = ['layout floating', 'move-node-to-workspace 4']
+
+[workspace-to-monitor-force-assignment]
+1 = 'main'
+2 = 'main'
+3 = 'secondary'
+4 = 'secondary'
+# 3 = 'main'
+# 4 = 'main'
+# 5 = 'secondary'
+# 6 = 'secondary'
+# 7 = 'secondary'
+# 8 = 'secondary'
 
 # ---------------------------------------------------------
 # 4. 快捷键定义 (Keybindings)
@@ -153,9 +162,12 @@ run = 'move-node-to-workspace 4'
 
 # === 核心操作 ===
 alt-shift-n = ['move-node-to-monitor next', 'focus-monitor next']  
-alt-shift-p = ['move-node-to-monitor prev', 'focus-monitor prev']
+alt-shift-p = ['move-node-to-workspace 5', 'workspace 5']
+
 alt-n = 'focus-monitor next'
 alt-p = 'focus-monitor prev'
+
+alt-comma = 'layout accordion horizontal vertical'
 
 # 全屏
 shift-alt-enter = 'fullscreen'
@@ -176,27 +188,26 @@ cmd-shift-k = 'focus up'
 cmd-shift-l = 'focus right'
 
 # === 窗口移动 ===
-alt-shift-h = 'move left'
-alt-shift-j = 'move down'
-alt-shift-k = 'move up'
-alt-shift-l = 'move right'
+ctrl-alt-h = 'move left'
+ctrl-alt-j = 'move down'
+ctrl-alt-k = 'move up'
+ctrl-alt-l = 'move right'
 
 # === 调整大小 ===
-ctrl-alt-h = 'resize width -50'
-ctrl-alt-j = 'resize height +50'
-ctrl-alt-k = 'resize height -50'
-ctrl-alt-l = 'resize width +50'
+alt-shift-h = 'resize width -50'
+alt-shift-j = 'resize height +50'
+alt-shift-k = 'resize height -50'
+alt-shift-l = 'resize width +50'
 
 # === 工作区切换 ===
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
 alt-3 = 'workspace 3'
-alt-4 = 'workspace 4'
+alt-4 = ['workspace 4', 'layout accordion horizontal vertical']
 alt-5 = 'workspace 5'
 alt-6 = 'workspace 6'
 alt-7 = 'workspace 7'
 alt-8 = 'workspace 8'
-alt-9 = 'workspace 9'
 
 # === 移动窗口到工作区 ===
 alt-shift-1 = ['move-node-to-workspace 1', 'workspace 1'] 
@@ -207,7 +218,6 @@ alt-shift-5 = ['move-node-to-workspace 5', 'workspace 5']
 alt-shift-6 = ['move-node-to-workspace 6', 'workspace 6']
 alt-shift-7 = ['move-node-to-workspace 7', 'workspace 7']
 alt-shift-8 = ['move-node-to-workspace 8', 'workspace 8']
-alt-shift-9 = ['move-node-to-workspace 9', 'workspace 9']
 
 # === 布局 ===
 alt-e = 'layout tiles horizontal vertical'

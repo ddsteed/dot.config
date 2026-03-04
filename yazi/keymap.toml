@@ -18,3 +18,21 @@ on = ["<C-p>"]
 run = "arrow -1"
 desc = "Up"
 
+# d: move selected items to ~/.Trash AND record original paths
+[[mgr.prepend_keymap]]
+on  = ["d"]
+run = 'shell --confirm -- "$HOME/.config/yazi/scripts/mac_trash_put.sh" %s'
+desc = "Trash to ~/.Trash (record for restore)"
+
+# R u: restore the most recently trashed item (non-interactive)
+[[mgr.prepend_keymap]]
+on  = ["R", "u"]
+run = 'shell --confirm -- "$HOME/.config/yazi/scripts/mac_trash_restore_last.sh"'
+desc = "Restore last trashed item to original path"
+
+# R b: browse history via fzf (interactive) and restore chosen one
+[[mgr.prepend_keymap]]
+on  = ["R", "b"]
+run = 'shell --block --confirm -- "$HOME/.config/yazi/scripts/mac_trash_browse_restore.sh"'
+desc = "Browse trash history and restore"
+

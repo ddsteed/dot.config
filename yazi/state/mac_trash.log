@@ -1,0 +1,41 @@
+{"ts": "2026-02-05T03:49:28.646376+00:00", "src": "/tmp/yazi-trash-test/a.txt", "dst": "/Users/fengh/.Trash/a.txt"}
+{"ts": "2026-02-05T03:57:26.098372+00:00", "src": "/tmp/bobko.aerospace-fengh.sock", "dst": "/Users/fengh/.Trash/bobko.aerospace-fengh.sock"}
+{"ts": "2026-02-05T03:57:29.252485+00:00", "src": "/tmp/mongodb-27017.sock", "dst": "/Users/fengh/.Trash/mongodb-27017.sock"}
+{"ts": "2026-02-05T03:57:29.252485+00:00", "src": "/tmp/MozillaUpdateLock-2CCAAC286B8DCC51", "dst": "/Users/fengh/.Trash/MozillaUpdateLock-2CCAAC286B8DCC51"}
+{"ts": "2026-02-05T03:57:29.252485+00:00", "src": "/tmp/sketchybar_fengh.lock", "dst": "/Users/fengh/.Trash/sketchybar_fengh.lock"}
+{"ts": "2026-02-05T03:57:29.252485+00:00", "src": "/tmp/weather_cache.sh", "dst": "/Users/fengh/.Trash/weather_cache.sh"}
+{"ts": "2026-02-05T03:59:53.388669+00:00", "src": "/tmp/yazi-trash-test/a.txt", "dst": "/Users/fengh/.Trash/a.txt (1)"}
+{"ts": "2026-02-05T04:01:15.373115+00:00", "src": "/tmp/yazi-trash-test/a.txt", "dst": "/Users/fengh/.Trash/a.txt (2)"}
+{"ts": "2026-02-05T04:01:27.938640+00:00", "src": "/tmp/yazi-trash-test/a.txt", "dst": "/Users/fengh/.Trash/a.txt (3)"}
+{"ts": "2026-02-05T04:02:46.946000+00:00", "src": "/Users/fengh/Downloads/chen-tao.md", "dst": "/Users/fengh/.Trash/chen-tao.md (1)"}
+{"ts": "2026-02-05T04:02:50.466281+00:00", "src": "/Users/fengh/Downloads/🦊得到AI课【合集】", "dst": "/Users/fengh/.Trash/🦊得到AI课【合集】"}
+{"ts": "2026-02-05T04:03:21.197644+00:00", "src": "/Users/fengh/Downloads/chen-tao.md", "dst": "/Users/fengh/.Trash/chen-tao.md (2)"}
+{"ts": "2026-02-05T04:05:54.482765+00:00", "src": "/Users/fengh/Downloads/chen-tao.md", "dst": "/Users/fengh/.Trash/chen-tao.md (2)"}
+{"ts": "2026-02-05T04:08:03.407459+00:00", "src": "/Users/fengh/Desktop/keymap.toml", "dst": "/Users/fengh/.Trash/keymap.toml"}
+{"ts": "2026-02-05T04:08:21.973210+00:00", "src": "/Users/fengh/Desktop/mac_trash_browse_restore.sh", "dst": "/Users/fengh/.Trash/mac_trash_browse_restore.sh"}
+{"ts": "2026-02-05T04:08:21.973210+00:00", "src": "/Users/fengh/Desktop/mac_trash_last.sh", "dst": "/Users/fengh/.Trash/mac_trash_last.sh"}
+{"ts": "2026-02-05T04:08:21.973210+00:00", "src": "/Users/fengh/Desktop/mac_trash_put.sh", "dst": "/Users/fengh/.Trash/mac_trash_put.sh"}
+{"ts": "2026-02-05T04:08:21.973210+00:00", "src": "/Users/fengh/Desktop/mac_trash_restore_last.sh", "dst": "/Users/fengh/.Trash/mac_trash_restore_last.sh"}
+{"ts": "2026-02-05T04:08:21.973210+00:00", "src": "/Users/fengh/Desktop/yazi.toml", "dst": "/Users/fengh/.Trash/yazi.toml"}
+{"ts": "2026-02-05T04:08:29.399081+00:00", "src": "/Users/fengh/Desktop/yazi.toml", "dst": "/Users/fengh/.Trash/yazi.toml"}
+{"ts": "2026-02-05T04:10:20.753334+00:00", "src": "/Users/fengh/Downloads/chen-tao.md", "dst": "/Users/fengh/.Trash/chen-tao.md (3)"}
+{"ts": "2026-02-05T04:10:34.169073+00:00", "src": "/Users/fengh/Downloads/chen-tao.md", "dst": "/Users/fengh/.Trash/chen-tao.md (3)"}
+{"ts": "2026-02-05T04:13:27.385700+00:00", "src": "/Users/fengh/Downloads/chen-tao.md", "dst": "/Users/fengh/.Trash/chen-tao.md (4)"}
+{"ts": "2026-02-05T04:13:57.798581+00:00", "src": "/Users/fengh/Desktop/yazi.toml", "dst": "/Users/fengh/.Trash/yazi.toml"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/aerospace.sh", "dst": "/Users/fengh/.Trash/aerospace.sh"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/auto_gaps.sh", "dst": "/Users/fengh/.Trash/auto_gaps.sh"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/clock.sh", "dst": "/Users/fengh/.Trash/clock.sh"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/front_app.sh", "dst": "/Users/fengh/.Trash/front_app.sh"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/icon_map.sh", "dst": "/Users/fengh/.Trash/icon_map.sh"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/input.sh", "dst": "/Users/fengh/.Trash/input.sh"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/sketchybarrc", "dst": "/Users/fengh/.Trash/sketchybarrc"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/space.sh", "dst": "/Users/fengh/.Trash/space.sh"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/theme.sh", "dst": "/Users/fengh/.Trash/theme.sh"}
+{"ts": "2026-02-05T07:43:15.323458+00:00", "src": "/Users/fengh/Desktop/weather.sh", "dst": "/Users/fengh/.Trash/weather.sh"}
+{"ts": "2026-02-05T08:04:19.612839+00:00", "src": "/Users/fengh/Desktop/weather.sh", "dst": "/Users/fengh/.Trash/weather.sh"}
+{"ts": "2026-02-05T14:01:04.752702+00:00", "src": "/Users/fengh/node_modules", "dst": "/Users/fengh/.Trash/node_modules"}
+{"ts": "2026-02-09T01:11:35.643351+00:00", "src": "/Users/fengh/Downloads/xc62VCKhMDDnaUpW6lX4AN.png", "dst": "/Users/fengh/.Trash/xc62VCKhMDDnaUpW6lX4AN.png"}
+{"ts": "2026-02-12T01:38:21.142374+00:00", "src": "/Users/fengh/Desktop/aerospace.toml", "dst": "/Users/fengh/.Trash/aerospace.toml"}
+{"ts": "2026-02-12T01:38:21.142374+00:00", "src": "/Users/fengh/Desktop/拨琴弦的人：智能体 AI 时代，教育应该把孩子带向哪里？.pdf", "dst": "/Users/fengh/.Trash/拨琴弦的人：智能体 AI 时代，教育应该把孩子带向哪里？.pdf"}
+{"ts": "2026-02-21T14:03:13.645541+00:00", "src": "/Users/fengh/Documents/RDS/ENTERTAINMENT/Messi/劳伦斯颁奖典礼_1.mp4", "dst": "/Users/fengh/.Trash/劳伦斯颁奖典礼_1.mp4"}
+{"ts": "2026-02-22T03:54:13.965901+00:00", "src": "/Users/fengh/Documents/RDS/ENTERTAINMENT/Messi_1", "dst": "/Users/fengh/.Trash/Messi_1"}

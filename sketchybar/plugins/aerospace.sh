@@ -1,53 +1,99 @@
 #!/bin/bash
+# ==============================================================
+# Aerospace workspace item renderer (Geek Glass)
+# Requirements implemented:
+# 1) Highlight focused workspace
+# 2) Hide workspaces with no (visible) apps
+# 3) Workspaces >= 5 are supported by creating enough items in sketchybarrc
+# ==============================================================
 
-# 加载图标映射
 source "$HOME/.config/sketchybar/plugins/icon_map.sh"
 
-SID=$1
+THEME_FILE="$HOME/.config/sketchybar/theme.sh"
+if [[ -f "$THEME_FILE" ]]; then
+    source "$THEME_FILE"
+fi
 
-# ==============================================================
-# 核心修复：主动获取当前激活的 Workspace ID
-# ==============================================================
-# 不再依赖 $FOCUSED_WORKSPACE 环境变量，而是直接问 Aerospace
-# 这样无论是什么事件触发 (关闭窗口、切换 App)，都能正确获得高亮状态
-FOCUSED_WORKSPACE=$(aerospace list-workspaces --focused)
+FG="${FG:-0xFFEDEDED}"
+ACCENT="${ACCENT:-0xFF66D9EF}"
+WORKSPACE_INACTIVE="${WORKSPACE_INACTIVE:-0xFFD0D0D0}"
 
-# 1. 获取该 Workspace 下的 App 列表
-APPS=$(aerospace list-windows --workspace "$SID" --format "%{app-name}" | sort -u)
+SID="$1"
 
-# 2. 判断可见性
-if [ -n "$APPS" ] || [ "$SID" = "$FOCUSED_WORKSPACE" ]; then
+# Focused workspace(s)
+# If AeroSpace triggers the event with FOCUSED_WORKSPACE, use that (faster).
+# Otherwise query AeroSpace directly.
+if [[ -n "${FOCUSED_WORKSPACE:-}" ]]; then
+    FOCUSED_WORKSPACES="$(printf '%s\n' "$FOCUSED_WORKSPACE" | tr -d '\r')"
+else
+    FOCUSED_WORKSPACES="$(aerospace list-workspaces --focused 2>/dev/null | tr -d '\r')"
+fi
+
+# Apps in this workspace (unique)
+APPS="$(aerospace list-windows --workspace "$SID" --format "%{app-name}" 2>/dev/null | sort -u)"
+
+# Build icon label string + whether we have any *visible* apps
+ICON_STR=""
+HAS_VISIBLE_APPS=0
+if [[ -n "$APPS" ]]; then
+    while read -r app; do
+        [[ -z "$app" ]] && continue
+        __icon_map "$app"
+        [[ -z "${icon_result:-}" ]] && continue   # treat Finder/LoginWindow as "invisible"
+        HAS_VISIBLE_APPS=1
+
+        if [[ -z "$ICON_STR" ]]; then
+            ICON_STR="$icon_result"
+        else
+            ICON_STR="$ICON_STR  $icon_result"
+        fi
+    done <<< "$APPS"
+fi
+
+# Is focused?
+if echo "$FOCUSED_WORKSPACES" | grep -qx "$SID"; then
+    IS_FOCUSED=1
+else
+    IS_FOCUSED=0
+fi
+
+# Drawing rule:
+# - Always show focused workspace (even if empty), so "current workspace" can be highlighted.
+# - Otherwise, show only if it has visible apps.
+if [[ "$IS_FOCUSED" -eq 1 || "$HAS_VISIBLE_APPS" -eq 1 ]]; then
     DRAWING="on"
 else
     DRAWING="off"
 fi
 
-# 3. 样式逻辑
-if [ "$SID" = "$FOCUSED_WORKSPACE" ]; then
-    # 激活：纯白色
-    COLOR=0xffffffff 
+# Style
+if [[ "$IS_FOCUSED" -eq 1 ]]; then
+    ICON_COLOR="$ACCENT"
+    LABEL_COLOR="$FG"
+    BG_DRAWING="on"
+    BG_COLOR="$ACCENT"
+    BG_HEIGHT=3
+    BG_RADIUS=2
+    BG_Y_OFFSET=12
 else
-    # 非激活：亮灰色
-    COLOR=0xffa6adc8 
+    ICON_COLOR="$WORKSPACE_INACTIVE"
+    LABEL_COLOR="$WORKSPACE_INACTIVE"
+    BG_DRAWING="off"
+    BG_COLOR=0x00000000
+    BG_HEIGHT=0
+    BG_RADIUS=0
+    BG_Y_OFFSET=0
 fi
 
-# 4. 图标映射
-ICON_STR=""
-if [ -n "$APPS" ]; then
-    while read -r app; do
-        __icon_map "$app"
-        if [ -n "$icon_result" ]; then
-            ICON_STR="$ICON_STR $icon_result "
-        fi
-    done <<< "$APPS"
-fi
-
-# 5. 更新 SketchyBar
-sketchybar --set $NAME \
-           drawing=$DRAWING \
-           background.drawing=off \
-           label.color=$COLOR \
-           icon.color=$COLOR \
+sketchybar --set "$NAME" \
+           drawing="$DRAWING" \
            icon="$SID" \
-           label="$ICON_STR"
+           icon.color="$ICON_COLOR" \
+           label="$ICON_STR" \
+           label.color="$LABEL_COLOR" \
+           background.drawing="$BG_DRAWING" \
+           background.color="$BG_COLOR" \
+           background.height="$BG_HEIGHT" \
+           background.corner_radius="$BG_RADIUS" \
+           background.y_offset="$BG_Y_OFFSET"
 

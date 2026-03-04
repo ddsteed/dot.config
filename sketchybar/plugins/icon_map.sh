@@ -26,7 +26,7 @@ function __icon_map() {
         "LoginWindow") icon_result="" ;;
 
         #*) icon_result="" ;;
-        *) icon_result="" ;;
+        *) icon_result="" ;;
     esac
 }
 

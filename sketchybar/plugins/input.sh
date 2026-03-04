@@ -6,6 +6,15 @@
 
 # 定义日志文件
 #LOG_FILE="/tmp/input_debug.log"
+
+# Load theme (for consistent colors)
+THEME_FILE="$HOME/.config/sketchybar/theme.sh"
+if [[ -f "$THEME_FILE" ]]; then
+    # shellcheck disable=SC1090
+    source "$THEME_FILE"
+fi
+FG="${FG:-0xFFEDEDED}"
+
 LOG_FILE="/dev/null"
 
 # 记录脚本开始运行的时间和触发者
@@ -32,16 +41,15 @@ echo "获取到的 ID: [$CURRENT_SOURCE]" >> $LOG_FILE
 # 3. 逻辑匹配
 case "$CURRENT_SOURCE" in
     *"Squirrel"* | *"rime"*)
-        #LABEL="Rime"
-        LABEL="  "
-        ICON="🐹"
-        ICON=""
+        LABEL="Ψ"
+        #ICON="🐹"
+        #ICON=""
+        ICON=""
         ;;
     *"ABC"* | *"US"* | *"keylayout.ABC"*)
-        #LABEL="ENG"
-        LABEL="En "
+        LABEL="A"
         #ICON="🇺🇸"
-        ICON=" "
+        ICON=""
         ;;
     *"sogou"*)
         LABEL="中"
