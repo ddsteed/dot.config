@@ -42,8 +42,8 @@ FONT="${FONT:-Hack Nerd Font}"
 FG="${FG:-0xFFEDEDED}"
 # 静默色：次要文本和图标颜色（灰色）
 MUTED="${MUTED:-0xFF8A8F98}"
-# 强调色：聚焦工作区、高亮元素使用（青色）
-ACCENT="${ACCENT:-0xFF66D9EF}"
+# 强调色：聚焦工作区、高亮元素使用（浅青色）
+ACCENT="${ACCENT:-0xFFA0E6FF}"
 # 栏背景色：半透明深灰色 (AA=0x33 约 20% 不透明度)
 BAR_BG="${BAR_BG:-0x33121720}"
 # 分隔符颜色：用于分隔各功能模块的圆点
@@ -112,11 +112,11 @@ sketchybar --add item monitor_watcher left \
 # 点击图标会打开 Finder
 # icon: Firefox 图标 (Nerd Font)
 # icon.font: 使用 JetBrains Mono Nerd Font
-# icon.color: 使用强调色（青色）
+# icon.color: 使用强调色（深青色）
 # label.drawing=off: 不显示文本标签
 sketchybar --add item logo left \
   --set logo \
-  icon.font="JetBrainsMono Nerd Font:Regular:13.0" \
+  icon.font="JetBrainsMono Nerd Font:Regular:15.0" \
   icon="" \
   icon.color=$ACCENT \
   icon.padding_left=6 \
@@ -175,12 +175,12 @@ sketchybar --add item front_app center \
 # --------------------------------------------------------------
 # 右侧：天气显示
 # --------------------------------------------------------------
-# update_freq: 更新频率 (秒) - 1200 秒 = 20 分钟
+# update_freq: 更新频率 (秒) - 600 秒 = 10 分钟
 # icon.drawing=off: 不显示图标 (天气图标通过 label 显示)
 # system_woke: 系统从睡眠唤醒事件
 sketchybar --add item weather right \
   --set weather \
-  update_freq=1200 \
+  update_freq=600 \
   script="$PLUGIN_DIR/weather.sh" \
   icon="" \
   icon.drawing=off \
@@ -230,7 +230,7 @@ sketchybar --add slider mem.slider right \
            icon.drawing=off \
            label.drawing=off \
            background.drawing=off \
-           slider.width=32 \
+           slider.width=48 \
            slider.percentage=60 \
            slider.highlight_color=0xFF00FF6A \
            slider.knob.drawing=off \
@@ -275,7 +275,7 @@ sketchybar --add slider cpu.slider right \
            icon.drawing=off \
            label.drawing=off \
            background.drawing=off \
-           slider.width=32 \
+           slider.width=48 \
            slider.percentage=35 \
            slider.highlight_color=0xFF00FF6A \
            slider.knob.drawing=off \
@@ -367,7 +367,7 @@ sketchybar --add item sep_clock_batt right \
 # label 显示: ↑ (充电) / ↓ (放电)
 sketchybar --add item battery.state right \
            --set battery.state \
-           update_freq=30 \
+           update_freq=10 \
            script="$PLUGIN_DIR/battery.sh" \
            icon.drawing=off \
            label="..." \
@@ -387,7 +387,7 @@ sketchybar --add slider battery.slider right \
            icon.drawing=off \
            label.drawing=off \
            background.drawing=off \
-           slider.width=32 \
+           slider.width=48 \
            slider.percentage=50 \
            slider.highlight_color=0xFF00FF6A \
            slider.knob.drawing=off \

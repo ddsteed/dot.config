@@ -46,7 +46,7 @@ fi
 # FG: 前景色，用于工作区编号和标签
 FG="${FG:-0xFFEDEDED}"
 # ACCENT: 强调色，用于聚焦的工作区
-ACCENT="${ACCENT:-0xFF66D9EF}"
+WORKSPACE_FOCUSED="${WORKSPACE_FOCUSED:-0xFF7EDEFF}"
 # WORKSPACE_INACTIVE: 非聚焦工作区的颜色
 WORKSPACE_INACTIVE="${WORKSPACE_INACTIVE:-0xFFD0D0D0}"
 
@@ -140,10 +140,10 @@ fi
 # --------------------------------------------------------------
 if [[ "$IS_FOCUSED" -eq 1 ]]; then
     # 聚焦状态：使用强调色，显示下划线
-    ICON_COLOR="$ACCENT"           # 青色高亮
+    ICON_COLOR="$WORKSPACE_FOCUSED"           # 青色高亮
     LABEL_COLOR="$FG"              # 白色文本
     BG_DRAWING="on"                # 开启背景绘制（下划线）
-    BG_COLOR="$ACCENT"             # 下划线颜色
+    BG_COLOR="$WORKSPACE_FOCUSED"             # 下划线颜色
     BG_HEIGHT=3                    # 下划线高度
     BG_RADIUS=2                    # 下划线圆角
     BG_Y_OFFSET=12                 # 下划线垂直偏移

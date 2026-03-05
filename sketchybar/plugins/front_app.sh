@@ -36,7 +36,7 @@ fi
 # --------------------------------------------------------------
 FG="${FG:-0xFFEDEDED}"          # 前景色（白色）
 MUTED="${MUTED:-0xFF8A8F98}"    # 静默色（灰色）
-ACCENT="${ACCENT:-0xFF66D9EF}"  # 强调色（青色）
+WORKSPACE_FOCUSED="${WORKSPACE_FOCUSED:-0xFF7EDEFF}"  # 聚焦色（天蓝色）
 
 # --------------------------------------------------------------
 # 处理前台应用切换事件
@@ -73,7 +73,7 @@ if [[ "$SENDER" == "front_app_switched" ]]; then
   # label.color: 标签颜色（使用前景色）
   sketchybar --set "$NAME" \
     icon="$ICON" \
-    icon.color="$ACCENT" \
+    icon.color="$WORKSPACE_FOCUSED" \
     label="$APP" \
     label.color="$FG"
 fi

@@ -9,11 +9,11 @@
 # 功能说明：
 #   - CPU: 显示当前 CPU 使用率百分比
 #   - MEM: 显示内存使用率百分比（active + wired + compressed）
-#   - 颜色: 根据负载动态变化（蓝→绿→黄→橙→红→紫）
+#   - 颜色: 根据负载动态变化（青→亮青→黄→橙→红→紫）
 #
 # 颜色分级：
-#   < 15%: 蓝色 (空闲)
-#   < 30%: 绿色 (良好)
+#   < 15%: 青色 (空闲)
+#   < 30%: 亮青色 (良好)
 #   < 45%: 黄色 (中等)
 #   < 60%: 橙色 (较高)
 #   < 75%: 橙红 (高)
@@ -144,8 +144,8 @@ mem_pct="$(clamp_0_100 "$mem_pct")"
 # 输出: ARGB 格式的颜色值
 rainbow_color() {
   local p="$1"
-  if   (( p < 15 )); then echo "0xFF00B0FF"   # 蓝色 - 空闲
-  elif (( p < 30 )); then echo "0xFF00FF6A"   # 绿色 - 良好
+  if   (( p < 15 )); then echo "0xFF66D9EF"   # 青色 - 空闲
+  elif (( p < 30 )); then echo "0xFF5DC8E8"   # 橙色 - 良好
   elif (( p < 45 )); then echo "0xFFFFFF00"   # 黄色 - 中等
   elif (( p < 60 )); then echo "0xFFFFA500"   # 橙色 - 较高
   elif (( p < 75 )); then echo "0xFFFF4500"   # 橙红 - 高
