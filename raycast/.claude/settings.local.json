@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find ~/Library -name *raycast* -type d)",
+      "Bash(plutil -p ~/Library/Preferences/com.raycast.macos.plist)",
+      "Bash(defaults read:*)",
+      "Bash(plutil -p -)",
+      "Bash(defaults write:*)",
+      "Bash(find ~/Library/Biome -type f -name *.data -o -name *.db -o -name *.sqlite)",
+      "Bash(sqlite3:*)",
+      "Bash(find ~/Library/Caches/com.raycast.macos -type f -name *.json -o -name *.plist)",
+      "Bash(find ~/Library -name *.raycastconfig -o -name *hotkey*.json -o -name *shortcut*.json)",
+      "Bash(open \"raycast://extensions/raycast/emoji\")",
+      "Bash(plutil -p ~/Library/Preferences/pro.betterdisplay.BetterDisplay.plist)",
+      "Bash(chmod +x /Users/fengh/.config/raycast/scripts/list-hotkeys.sh)",
+      "Bash(/Users/fengh/.config/raycast/scripts/list-hotkeys.sh)",
+      "Bash(chmod:*)",
+      "Bash(/Users/fengh/.config/raycast/scripts/hotkeys.sh)"
+    ]
+  }
+}

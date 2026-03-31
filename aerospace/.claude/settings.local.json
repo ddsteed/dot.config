@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(hs -c \"hs.reload\\(\\)\")",
+      "Bash(lua -e \"_G.hs = {alert = function\\(\\) end, hotkey = {bind = function\\(\\) end}, mouse = {currentScreen = function\\(\\) return {frame = function\\(\\) return {x=0, y=0, w=100, h=100} end, name = function\\(\\) return \"\"test\"\" end} end, absolutePosition = function\\(\\) end}}\")",
+      "Bash(dofile \"/Users/fengh/.hammerspoon/init.lua\")"
+    ]
+  }
+}

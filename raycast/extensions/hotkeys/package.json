@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.raycast.ai/ schemas/extension-1.0.0.json",
+  "name": "hotkeys",
+  "title": "Hotkeys List",
+  "description": "查看 macOS 系统和应用的快捷键配置",
+  "icon": "keyboard.png",
+  "author": "fengh",
+  "categories": ["Productivity"],
+  "license": "MIT",
+  "commands": [
+    {
+      "name": "list",
+      "title": "List All Hotkeys",
+      "description": "显示所有快捷键",
+      "mode": "view"
+    }
+  ]
+}

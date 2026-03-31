@@ -133,6 +133,18 @@ Example from `aerospace.sh`:
 sketchybar --set "$NAME" drawing="$DRAWING" ...
 ```
 
+### Update Frequencies
+
+| Component | Frequency | Trigger |
+|-----------|-----------|---------|
+| CPU/MEM | 5 seconds | `update_freq` in sketchybarrc |
+| Battery | 10 seconds | `update_freq` in sketchybarrc |
+| Clock | 10 seconds | `update_freq` in sketchybarrc |
+| Weather | 600 seconds (10 min) | `update_freq` in sketchybarrc |
+| Workspaces | On demand | Event-driven (`aerospace_workspace_change`) |
+| Front App | On demand | Event-driven (`front_app_switched`) |
+| Input Method | On demand | Event-driven (`input_change`) |
+
 ### Color Format
 
 All colors use **ARGB format**: `0xAARRGGBB`
@@ -141,7 +153,23 @@ All colors use **ARGB format**: `0xAARRGGBB`
 - `GG` — Green channel
 - `BB` — Blue channel
 
-Example: `0x703F3F3F` = ~44% opacity dark gray
+Example: `0xAA3F3F3F` = ~67% opacity dark gray
+
+### Theme Color Variables (theme.sh)
+
+Centralized color definitions used across all plugins:
+
+| Variable | Value | Usage |
+|----------|-------|-------|
+| `FG` | `0xFFF2F2F2` | Primary text/icon color (off-white) |
+| `MUTED` | `0xFFB3B9C5` | Secondary text/icon color (gray) |
+| `ACCENT` | `0xFF5DC8E8` | Highlight color (bright cyan) |
+| `WORKSPACE_INACTIVE` | `0xFFD6DBE5` | Non-focused workspace (light gray) |
+| `WORKSPACE_FOCUSED` | `0xFF7EDEFF` | Focused workspace (sky blue) |
+| `BAR_BG` | `0xAA3F3F3F` | Bar background (67% opacity dark gray) |
+| `SEP_COLOR` | `0xFF5A606B` | Separator dot color (medium gray) |
+
+**Color Migration (v1.1.0):** ACCENT changed from dark cyan (`0xFF1E7AA6`) to bright cyan (`0xFF5DC8E8`) for better visibility on dark backgrounds. BAR_BG opacity increased from 44% to 67%.
 
 ### Icon Mapping System
 
@@ -163,7 +191,7 @@ sketchybar --add slider <name> <position> \
   --set <name> \
     slider.width=48 \
     slider.percentage=50 \
-    slider.highlight_color=0xFF00FF6A \
+    slider.highlight_color=0xFF5DC8E8 \
     slider.background.height=10 \
     ...
 ```
@@ -174,11 +202,11 @@ Update via: `sketchybar --set <name> slider.percentage=<value> slider.highlight_
 
 ### Battery Color Coding (battery.sh)
 
-- **Charging (↑)**: Deep cyan `0xFF1E7AA6` for all levels
+- **Charging (↑)**: Bright cyan `0xFF5DC8E8` for all levels
 - **Discharging (↓)**:
   - `≤ 20%`: Red `0xFFFF3B30` (low)
   - `≤ 50%`: Yellow `0xFFFFCC00` (medium)
-  - `≤ 80%`: Deep cyan `0xFF1E7AA6` (good)
+  - `≤ 80%`: Bright cyan `0xFF5DC8E8` (good)
   - `> 80%`: Green `0xFF00FF6A` (high)
 
 ### Workspace Visibility Rules
@@ -192,7 +220,7 @@ The `aerospace.sh` plugin implements these visibility rules:
 
 The 7-tier color scale provides visual feedback:
 - `< 15%`: Cyan `0xFF66D9EF` (idle)
-- `< 30%`: Dark cyan `0xFF1E7AA6` (good)
+- `< 30%`: Bright cyan `0xFF5DC8E8` (good)
 - `< 45%`: Yellow `0xFFFFFF00` (moderate)
 - `< 60%`: Orange `0xFFFFA500` (elevated)
 - `< 75%`: Orange-red `0xFFFF4500` (high)

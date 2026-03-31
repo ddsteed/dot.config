@@ -1,0 +1,41 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//opt/homebrew/share/yazi/default/**)",
+      "Read(//Users/fengh/.local/share/yazi/default/**)",
+      "Bash(yazi --help)",
+      "Bash(yazi --debug-config)",
+      "Bash(xargs -I {} open {})",
+      "Bash(curl -sL https://raw.githubusercontent.com/sxyazi/yazi/main/yazi-config/preset/openers.toml)",
+      "Bash(curl -sL https://raw.githubusercontent.com/sxyazi/yazi/main/yazi-config/default/openers.toml)",
+      "Bash(curl -sL https://raw.githubusercontent.com/sxyazi/yazi/main/config/openers.toml)",
+      "WebSearch",
+      "Bash(curl -sL https://raw.githubusercontent.com/sxyazi/yazi/main/yazi-config/openers.toml)",
+      "Bash(yazi:*)",
+      "Bash(python3:*)",
+      "Bash(chmod:*)",
+      "Bash(echo \"$HOME/.config/yazi/scripts/open_smart.sh\")",
+      "Read(//Users/fengh/.config/yazi/$HOME/.config/yazi/scripts/**)",
+      "Bash(find ~ -name *.pages -type f)",
+      "Bash(xargs -I {} \"$HOME/.config/yazi/scripts/open_smart.sh\" \"{}\")",
+      "Bash(\"/Users/fengh/.config/yazi/scripts/open_smart.sh\" \"/Users/fengh/Desktop/Test.pages\")",
+      "Bash(echo \"Test completed with code: $?\")",
+      "Bash(while read:*)",
+      "Bash(do echo:*)",
+      "Read(//Users/fengh/.config/yazi/**)",
+      "Bash(done)",
+      "Bash(toml check:*)",
+      "Bash(tomli check:*)",
+      "Bash(for f:*)",
+      "Bash(bash -n \"$f\")",
+      "Bash(echo \"Syntax check failed for $f\")",
+      "Bash(bash -n /Users/fengh/.config/yazi/scripts/smart_open.sh)",
+      "Bash(do bash:*)",
+      "Bash(echo \"✓ $f\")",
+      "Bash(echo \"✗ $f\")",
+      "Bash(lua -e \"dofile\\(''$HOME/.config/yazi/init.lua''\\)\")",
+      "Bash(qlmanage -h)",
+      "Bash(du -sh ~/.claude/projects/*)"
+    ]
+  }
+}

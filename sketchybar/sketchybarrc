@@ -12,7 +12,11 @@
 #   中间：前台应用图标 + 名称
 #   右侧：天气 • 内存 • CPU • 日期 时间 • 电池 • 输入法
 #
-# @version   1.0.0 (2025-03-04)
+# @version   1.1.0 (2026-03-19)
+#            - 清理注释代码，优化布局结构
+#            - 统一版本格式
+#            - 移除未使用的 sep_cpu_mem_gap 条目
+#            1.0.0 (2025-03-04)
 #            - 初始版本，集成 AeroSpace 工作区管理
 #            - 添加 CPU/MEM/Clock/Date/Battery 监控
 #            - 集成 Squirrel/Rime 输入法检测
@@ -143,9 +147,11 @@ sketchybar --add event input_change "AppleSelectedInputSourcesChangedNotificatio
 #   - front_app_switched: 前台应用切换
 # script: 渲染脚本 (传入工作区编号)
 # click_script: 点击时切换到对应工作区
+# 临时修复：移除 front_app_switched 订阅，避免过度触发 aerospace.sh
+# 只订阅与工作区相关的事件
 for sid in $(seq 1 "$SPACE_COUNT"); do
   sketchybar --add item space.$sid left \
-    --subscribe space.$sid aerospace_workspace_change space_change space_windows_change front_app_switched \
+    --subscribe space.$sid aerospace_workspace_change space_change space_windows_change \
     --set space.$sid \
     icon="$sid" \
     icon.padding_left=10 \
@@ -157,18 +163,22 @@ for sid in $(seq 1 "$SPACE_COUNT"); do
 done
 
 # --------------------------------------------------------------
-# 中间：前台应用 (图标 + 名称)
+# 左侧：前台应用图标和名称
 # --------------------------------------------------------------
 # front_app_switched: 前台应用切换事件
 # icon.drawing=on: 显示应用图标
-# script: 获取前台应用信息并更新显示
-sketchybar --add item front_app center \
+# label.drawing=on: 显示应用名称
+# icon.padding_left: 与工作区的距离（20px）
+# 位置：left（左侧），在工作区后面
+sketchybar --add item front_app left \
   --set front_app \
   icon.drawing=on \
-  icon.font="$FONT:Regular:13.0" \
-  icon.padding_right=6 \
-  label.font="$FONT:Bold:14.0" \
-  label.color=$FG \
+  icon.font="$FONT:Regular:15.0" \
+  icon.padding_left=20 \
+  icon.padding_right=8 \
+  label.drawing=on \
+  label.font="$FONT:Regular:11.0" \
+  label.padding_right=10 \
   script="$PLUGIN_DIR/front_app.sh" \
   --subscribe front_app front_app_switched
 
@@ -203,18 +213,6 @@ sketchybar --add item sep_weather_sys right \
   label.drawing=off \
   icon.padding_left=2 \
   icon.padding_right=2
-
-# --------------------------------------------------------------
-# 内存监控：CPU 和 MEM 之间的间隔
-# --------------------------------------------------------------
-# 创建一个 4 像素宽的空白间隔
-sketchybar --add item sep_cpu_mem_gap right \
-           --set sep_cpu_mem_gap \
-           drawing=on \
-           width=4 \
-           icon.drawing=off \
-           label.drawing=off \
-           background.drawing=off
 
 # --------------------------------------------------------------
 # 内存监控：进度滑块
@@ -305,19 +303,7 @@ sketchybar --add item cpu.pct right \
            label.padding_right=0 \
            background.drawing=off
 
-# --------------------------------------------------------------
-# 分隔符：系统监控 • 时钟
-# --------------------------------------------------------------
-sketchybar --add item sep_sys_clock right \
-           --set sep_sys_clock \
-           icon="•" \
-           icon.font="$FONT:Regular:13.0" \
-           icon.color=$SEP_COLOR \
-           label.drawing=off \
-           icon.padding_left=2 \
-           icon.padding_right=2
-
-# --------------------------------------------------------------
+## --------------------------------------------------------------
 # 时钟：时间显示
 # --------------------------------------------------------------
 # update_freq: 更新频率 (秒)
@@ -450,8 +436,8 @@ sketchybar --add item input right \
 # weather • mem • cpu • date clock • battery • input
 sketchybar --reorder \
            weather sep_weather_sys \
-           mem.slider mem.pct sep_cpu_mem_gap cpu.slider cpu.pct sep_sys_clock \
            date clock sep_clock_batt \
+           mem.slider mem.pct cpu.slider cpu.pct \
            battery.state battery.slider battery.pct sep_batt_input \
            input
 

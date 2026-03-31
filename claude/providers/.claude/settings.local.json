@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls:*)",
+      "Bash(gpg:*)",
+      "Bash(find:*)",
+      "Bash(/tmp/authinfo_recover:*)",
+      "Read(//tmp/**)",
+      "Bash(grep:*)",
+      "Bash(cat:*)",
+      "Bash(head -3 echo \"   aliyun.env:\" grep \"AUTH_TOKEN\\\\|BASE_URL\\\\|MODEL\" ~/.config/claude/providers/aliyun.env)"
+    ]
+  }
+}

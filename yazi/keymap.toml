@@ -1,13 +1,73 @@
+# =============================================================================
+# Yazi 快捷键配置文件
+# =============================================================================
+# 作者: Hao Feng (F1)
+# 文档: https://yazi-rs.github.io/docs/configuration/yazi
+# =============================================================================
+# 版本历史:
+#   v1.0.0 - 2025-01-15 - 基础快捷键配置
+#   v1.1.0 - 2025-02-10 - 添加 zoxide 和 fzf 集成
+#   v1.2.0 - 2025-03-01 - 添加自定义回收站系统 (d 键删除)
+#   v1.3.0 - 2025-03-15 - 添加回收站恢复快捷键 (R u / R b)
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Manager 模式快捷键
+# -----------------------------------------------------------------------------
+# prepend_keymap: 在默认快捷键之前插入（优先级更高，可覆盖默认）
+# -----------------------------------------------------------------------------
+
+# ────────────────────────────────────────────────────────────────────────────
+# 导航增强快捷键
+# ────────────────────────────────────────────────────────────────────────────
+
+# zoxide 智能目录跳转
+# 按键: g + z
+# 功能: 使用 zoxide 快速跳转到常用目录
 [[mgr.prepend_keymap]]
 on = ["g", "z"]
 run = "plugin zoxide"
 desc = "Jump with zoxide"
 
+# ────────────────────────────────────────────────────────────────────────────
+# 常用目录快捷跳转
+# ────────────────────────────────────────────────────────────────────────────
+
+# 按键: g + d (Desktop)
+[[mgr.prepend_keymap]]
+on = ["g", "d"]
+run = "cd ~/Desktop"
+desc = "Go to Desktop"
+
+# 按键: g + h (Home)
+[[mgr.prepend_keymap]]
+on = ["g", "h"]
+run = "cd ~"
+desc = "Go to Home"
+
+# 按键: g + c (Config)
+[[mgr.prepend_keymap]]
+on = ["g", "c"]
+run = "cd ~/.config"
+desc = "Go to ~/.config"
+
+# 按键: g + D (Downloads)
+[[mgr.prepend_keymap]]
+on = ["g", "D"]
+run = "cd ~/Downloads"
+desc = "Go to Downloads"
+
+# fzf 文件搜索
+# 按键: f
+# 功能: 在当前目录递归搜索文件（使用 fzf）
 [[mgr.prepend_keymap]]
 on = ["f"]
 run = "plugin fzf"
 desc = "Find files with fzf"
 
+# Vim 风格上下移动
+# 按键: Ctrl + n / Ctrl + p
+# 功能: 不干扰 j/k 的原有映射
 [[mgr.prepend_keymap]]
 on = ["<C-n>"]
 run = "arrow 1"
@@ -18,21 +78,109 @@ on = ["<C-p>"]
 run = "arrow -1"
 desc = "Up"
 
-# d: move selected items to ~/.Trash AND record original paths
+# ────────────────────────────────────────────────────────────────────────────
+# 回收站系统快捷键
+# ────────────────────────────────────────────────────────────────────────────
+# 自定义 macOS 回收站系统，支持恢复到原路径
+# 需配合 scripts/ 目录下的 shell 脚本使用
+
+# 删除到回收站（覆盖默认 d 键）
+# 按键: d
+# 功能: 移动选中文件到 ~/.Trash 并记录原始路径
+# 脚本: mac_trash_put.sh
 [[mgr.prepend_keymap]]
 on  = ["d"]
 run = 'shell --confirm -- "$HOME/.config/yazi/scripts/mac_trash_put.sh" %s'
 desc = "Trash to ~/.Trash (record for restore)"
 
-# R u: restore the most recently trashed item (non-interactive)
+# 恢复最近删除的项目
+# 按键: R + u (Restore + Undo)
+# 功能: 非交互式恢复最近一个删除的文件到原路径
+# 脚本: mac_trash_restore_last.sh
 [[mgr.prepend_keymap]]
 on  = ["R", "u"]
 run = 'shell --confirm -- "$HOME/.config/yazi/scripts/mac_trash_restore_last.sh"'
 desc = "Restore last trashed item to original path"
 
-# R b: browse history via fzf (interactive) and restore chosen one
+# 浏览回收站历史并恢复
+# 按键: R + b (Restore + Browse)
+# 功能: 使用 fzf 交互式选择要恢复的文件
+# 脚本: mac_trash_browse_restore.sh
 [[mgr.prepend_keymap]]
 on  = ["R", "b"]
 run = 'shell --block --confirm -- "$HOME/.config/yazi/scripts/mac_trash_browse_restore.sh"'
 desc = "Browse trash history and restore"
 
+# ────────────────────────────────────────────────────────────────────────────
+# 默认快捷键参考（未覆盖的默认行为）
+# ────────────────────────────────────────────────────────────────────────────
+#
+# 导航:
+#   j / k         : 上下移动
+#   h / l         : 进入上级/进入目录
+#   gg / G        : 跳到顶部/底部
+#   z             : 跳到中间
+#   zh / zl       : 水平滚动
+#   zt / zz / zb  : 视图定位
+#
+# 选择:
+#   Space         : 切换选中
+#   v             : 进入/退出可视模式
+#   V             : 选中所有文件
+#   Ctrl + a      : 反选
+#
+# 操作:
+#   q             : 退出
+#   Q             : 退出当前目录
+#   Enter         : 打开文件
+#   e             : 编辑文件
+#   :             : 命令模式
+#   !             : Shell 命令
+#   r             : 重命名
+#   y             : 复制 (y)
+#   Y             : 复制选中
+#   p             : 粘贴
+#   P             : 覆盖粘贴
+#   x             : 剪切
+#   X             : 剪切选中
+#   a             : 创建文件/目录
+#   c             : 复制到路径
+#   m             : 移动到路径
+#   o             : 打开方式
+#   O             : 打开方式（始终询问）
+#
+# 搜索:
+#   /             : 搜索
+#   n / N         : 下一个/上一个搜索结果
+#
+# 标记:
+#   mf            : 按文件类型标记
+#   mr            : 按正则标记
+#   mt            : 按时间标记
+#   mm            : 按 MIME 标记
+#
+# 过滤:
+#   ss            : 按字符串过滤
+#   sr            : 按正则过滤
+#   st            : 按文件类型过滤
+#
+# 排序:
+#   s,            : 按名称排序
+#   sn            : 按名称排序（不区分大小写）
+#   ss            : 按大小排序
+#   st            : 按时间排序
+#   sc            : 按创建时间排序
+#   sa            : 按最后访问时间排序
+#   se            : 按扩展名排序
+#
+# 查看:
+#   .             : 切换隐藏文件
+#   ~             : 切换预览
+#   ;             : 切换所有窗口
+#
+# 其他:
+#   Tab           : 切换到下一个工作区
+#   =             : 设置选择模式
+#   [             : 创建符号链接
+#   ]             : 创建硬链接
+# =============================================================================

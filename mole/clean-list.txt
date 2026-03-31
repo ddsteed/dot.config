@@ -1,0 +1,55 @@
+# Mole Cleanup Preview - 2026-03-20 16:03:10
+#
+# How to protect files:
+# 1. Copy any path below to ~/.config/mole/whitelist
+# 2. Run: mo clean --whitelist
+#
+# Example:
+#   /Users/*/Library/Caches/com.example.app
+#
+
+
+=== System ===
+
+=== User essentials ===
+/Users/fengh/Library/Caches  # 120.8MB, 9 items
+
+=== App caches ===
+
+=== Browsers ===
+/Users/fengh/Library/Caches/Google/Chrome/Default  # 11.1MB
+/Users/fengh/Library/Application Support/Google/GoogleUpdater/crx_cache/metadata.json  # 1KB
+
+=== Cloud & Office ===
+
+=== Developer tools ===
+/Users/fengh/.npm/_logs/2026-03-20T08_03_32_070Z-debug-0.log  # 1KB
+/Users/fengh/Library/Caches/Homebrew  # 55.3MB, 4 items
+
+=== Applications ===
+/Users/fengh  # 224KB, 3 items
+
+=== Virtualization ===
+
+=== Application Support ===
+
+=== Orphaned data ===
+
+=== Apple Silicon updates ===
+
+=== Device backups ===
+
+=== Time Machine ===
+
+=== Large files ===
+
+=== System Data clues ===
+
+=== Project artifacts ===
+
+# ============================================
+# Summary
+# ============================================
+# Potential cleanup: 192.1MB
+# Items: 28
+# Categories: 8
